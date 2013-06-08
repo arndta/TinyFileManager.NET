@@ -8,4 +8,4 @@ TinyFileManager.NET is a free, C# file manager plugin for TinyMCE v4.  It is bes
 
 This project is released under [The MIT License](http://opensource.org/licenses/MIT).  Feel free to edit/re-distribute in any way that is helpful to you.
 
-
+####NOTE: This plugin is developed only for version 4+ of TinyMCE.  Plugins for TinyMCE versions 3.xx and older are written in a different format.
