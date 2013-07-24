@@ -25,15 +25,6 @@ namespace TinyFileManager.NET.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("The upload exceeds the max filesize allowed")]
-        public string Message_UploadTooBig {
-            get {
-                return ((string)(this["Message_UploadTooBig"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\'jpg\', \'jpeg\', \'png\', \'gif\', \'bmp\', \'tiff\'")]
         public string AllowedImageExtensions {
             get {
@@ -44,7 +35,7 @@ namespace TinyFileManager.NET.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\'doc\', \'docx\', \'pdf\', \'xls\', \'xlsx\', \'txt\', \'csv\',\'html\',\'psd\',\'sql\',\'log\',\'fla\'," +
-            "\'xml\',\'ade\',\'adp\',\'ppt\',\'pptx\'")]
+            "\'xml\',\'ade\',\'adp\',\'ppt\',\'pptx\',\'zip\',\'rar\'")]
         public string AllowedFileExtensions {
             get {
                 return ((string)(this["AllowedFileExtensions"]));
@@ -71,7 +62,7 @@ namespace TinyFileManager.NET.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\'zip\', \'rar\'")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string AllowedMiscExtensions {
             get {
                 return ((string)(this["AllowedMiscExtensions"]));

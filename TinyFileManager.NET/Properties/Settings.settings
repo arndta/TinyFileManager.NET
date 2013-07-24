@@ -1,15 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TinyFileManager.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TinyFileManager.NET.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Message_UploadTooBig" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">The upload exceeds the max filesize allowed</Value>
-    </Setting>
     <Setting Name="AllowedImageExtensions" Type="System.String" Scope="Application">
       <Value Profile="(Default)">'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff'</Value>
     </Setting>
     <Setting Name="AllowedFileExtensions" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">'doc', 'docx', 'pdf', 'xls', 'xlsx', 'txt', 'csv','html','psd','sql','log','fla','xml','ade','adp','ppt','pptx'</Value>
+      <Value Profile="(Default)">'doc', 'docx', 'pdf', 'xls', 'xlsx', 'txt', 'csv','html','psd','sql','log','fla','xml','ade','adp','ppt','pptx','zip','rar'</Value>
     </Setting>
     <Setting Name="AllowedVideoExtensions" Type="System.String" Scope="Application">
       <Value Profile="(Default)">'mov', 'mpeg', 'mp4', 'avi', 'mpg','wma'</Value>
@@ -18,7 +15,7 @@
       <Value Profile="(Default)">'mp3', 'm4a', 'ac3', 'aiff', 'mid'</Value>
     </Setting>
     <Setting Name="AllowedMiscExtensions" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">'zip', 'rar'</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="UploadPath" Type="System.String" Scope="Application">
       <Value Profile="(Default)">resources\files</Value>
