@@ -22,6 +22,7 @@
 
 			//dropzone config
 			Dropzone.options.myAwesomeDropzone = {
+                //forceFallback: true,
 				dictInvalidFileType: "File extension is not allowed",
 				dictFileTooBig: "The upload exceeds the max filesize allowed",
 				dictResponseError: "SERVER ERROR",
@@ -43,10 +44,13 @@
 		
 <!----- uploader div start ------->
         <div class="uploader">            
-	        <form action="dialog.aspx?cmd=upload" id="myAwesomeDropzone" class="dropzone">
+	        <form action="dialog.aspx?cmd=upload" method="post" enctype="multipart/form-data" id="myAwesomeDropzone" class="dropzone">
 		        <input type="hidden" name="folder" value="<% Response.Write(this.strCurrPath); %>"/>
 		        <div class="fallback">
+                    <input type="hidden" name="fback" value="true" />
 	    	        <input name="file" type="file" multiple />
+                    <br />
+                    <input type="submit" name="submit" value="Upload" />
 	  	        </div>
 	        </form>
 	        <center><button class="btn btn-large btn-primary close-uploader"><i class="icon-backward icon-white"></i> Return to files list</button></center>

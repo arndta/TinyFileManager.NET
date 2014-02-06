@@ -137,7 +137,15 @@ namespace TinyFileManager.NET
                     }
 
                     // end response
-                    Response.End();
+                    if (Request.Form["fback"] == "true")
+                    {
+                        Response.Redirect(this.strCurrLink);
+                    }
+                    else
+                    {
+                        Response.End();
+                    }
+                    
                     break;
 
                 case "download":
