@@ -17,12 +17,6 @@
     <Setting Name="AllowedMiscExtensions" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="UploadPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">resources\files</Value>
-    </Setting>
-    <Setting Name="ThumbPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">resources\thumbs</Value>
-    </Setting>
     <Setting Name="AllowUploadFile" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -37,6 +31,21 @@
     </Setting>
     <Setting Name="MaxUploadSizeMb" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="AzureBlobStore" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DefaultEndpointsProtocol=https;AccountName=playgroundservice;AccountKey=HCAHx1kCfejMz8/fXP4Dcc6hFG8VMaUR164wv91x9iUXF63cTp4WWb29EPqhdmEasFTq0bMxpiBsnm6EneUQHw==</Value>
+    </Setting>
+    <Setting Name="AzureBlobUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">//playgroundservice.blob.core.windows.net/</Value>
+    </Setting>
+    <Setting Name="AzureBlobContainer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">tfm</Value>
+    </Setting>
+    <Setting Name="UploadPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">files</Value>
+    </Setting>
+    <Setting Name="ThumbPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">thumbs</Value>
     </Setting>
   </Settings>
 </SettingsFile>

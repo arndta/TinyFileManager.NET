@@ -71,24 +71,6 @@ namespace TinyFileManager.NET.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("resources\\files")]
-        public string UploadPath {
-            get {
-                return ((string)(this["UploadPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("resources\\thumbs")]
-        public string ThumbPath {
-            get {
-                return ((string)(this["ThumbPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AllowUploadFile {
             get {
@@ -129,6 +111,52 @@ namespace TinyFileManager.NET.Properties {
         public int MaxUploadSizeMb {
             get {
                 return ((int)(this["MaxUploadSizeMb"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DefaultEndpointsProtocol=https;AccountName=playgroundservice;AccountKey=HCAHx1kCf" +
+            "ejMz8/fXP4Dcc6hFG8VMaUR164wv91x9iUXF63cTp4WWb29EPqhdmEasFTq0bMxpiBsnm6EneUQHw==")]
+        public string AzureBlobStore {
+            get {
+                return ((string)(this["AzureBlobStore"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("//playgroundservice.blob.core.windows.net/")]
+        public string AzureBlobUrl {
+            get {
+                return ((string)(this["AzureBlobUrl"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("tfm")]
+        public string AzureBlobContainer {
+            get {
+                return ((string)(this["AzureBlobContainer"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("files")]
+        public string UploadPath {
+            get {
+                return ((string)(this["UploadPath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("thumbs")]
+        public string ThumbPath {
+            get {
+                return ((string)(this["ThumbPath"]));
             }
         }
     }
