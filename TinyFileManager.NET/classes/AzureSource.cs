@@ -105,7 +105,7 @@ namespace TinyFileManager.NET
                 {
                     fileItem.strPreviewLink = "<a class=\"btn preview disabled\" title=\"Preview\"><i class=\"icon-eye-open\"></i></a>";
                 }
-                fileItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + clsConfig.strUploadURL + "/" + fileItem.strPath.Replace('\\', '/') + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + fileItem.strThumbImage + "\" height=\"100\"><h4>" + fileItem.strName + "</h4></a>";
+                fileItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + fileItem.strPath + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + fileItem.strThumbImage + "\" height=\"100\"><h4>" + fileItem.strName + "</h4></a>";
 
                 // check to see if it's the type of file we are looking at
                 if ((this.boolOnlyImage && fileItem.boolIsImage) || (this.boolOnlyVideo && fileItem.boolIsVideo) || (!this.boolOnlyImage && !this.boolOnlyVideo))
