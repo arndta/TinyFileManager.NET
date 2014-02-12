@@ -77,8 +77,11 @@ namespace TinyFileManager.NET
             //setup current link
             strCurrLink = "dialog.aspx?type=" + this.strType + "&editor=" + this.strEditor + "&lang=" + this.strLang;
 
-            //var source = new DirectorySource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
-            var source = new AzureSource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
+            Source source;            
+            if (clsConfig.storageMode == clsConfig.StorageModeType.Azure)
+                source = new AzureSource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
+            else // (clsConfig.storageMode == "directory")
+                source = new DirectorySource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
 
             switch (strCmd)
             {
@@ -152,18 +155,7 @@ namespace TinyFileManager.NET
                     break;
 
                 case "delfile":
-                    try
-                    {
-                        File.Delete(clsConfig.strUploadPath + "\\" + this.strFile);
-                        if (File.Exists(clsConfig.strThumbPath + "\\" + this.strFile))
-                        {
-                            File.Delete(clsConfig.strThumbPath + "\\" + this.strFile);
-                        }
-                    }
-                    catch
-                    {
-                        //TODO: set error
-                    }
+                    source.DeleteFile(strFile);
                     goto default;
 
                 case "delfolder":

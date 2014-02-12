@@ -144,7 +144,16 @@ namespace TinyFileManager.NET.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("files")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Azure")]
+        public string StorageMode {
+            get {
+                return ((string)(this["StorageMode"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("resources\\files")]
         public string UploadPath {
             get {
                 return ((string)(this["UploadPath"]));
@@ -153,7 +162,7 @@ namespace TinyFileManager.NET.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("thumbs")]
+        [global::System.Configuration.DefaultSettingValueAttribute("resources\\thumbs")]
         public string ThumbPath {
             get {
                 return ((string)(this["ThumbPath"]));

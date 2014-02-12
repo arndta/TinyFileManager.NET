@@ -8,37 +8,21 @@ using System.Web;
 
 namespace TinyFileManager.NET
 {
-    public class AzureSource
+    public class AzureSource : Source
     {
         private CloudBlobClient blobClient;
         private CloudBlobContainer blobContainer;
-
-        private string strCurrPath;
-        private string strCurrLink;
-        private bool boolOnlyImage;
-        private bool boolOnlyVideo;
-        private ArrayList arrLinks = new ArrayList();
-        private string strApply;
-        private string strType;
-        private string physicalPath;
-
+        
         public AzureSource(string currentPath, string currentLink, bool onlyImages, bool onlyVideos, string physicalPath, string selectFnString, string type)
+            :base (currentPath, currentLink, onlyImages, onlyVideos, physicalPath, selectFnString, type)
         {
-            strCurrPath = currentPath;
-            strCurrLink = currentLink;
-            boolOnlyImage = onlyImages;
-            boolOnlyVideo = onlyVideos;
-            this.physicalPath = physicalPath;
-            strApply = selectFnString;
-            strType = type;
-
             var storageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount.Parse(clsConfig.azureBlobStore);
             blobClient = storageAccount.CreateCloudBlobClient();
             blobContainer = blobClient.GetContainerReference(clsConfig.azureBlobContainer);
             
         }
 
-        public ArrayList GetLinks()
+        internal override ArrayList GetLinks()
         {
             var blobs = blobContainer.ListBlobs("files/");
             foreach (var blob in blobs)
@@ -115,7 +99,7 @@ namespace TinyFileManager.NET
                 fileItem.strDownBtn = "<a class=\"btn\" title=\"Download\" href=\"" + fileUrl + "\"><i class=\"icon-download\"></i></a>";
                 if (fileItem.boolIsImage)
                 {
-                    fileItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + clsConfig.strUploadURL + "/" + fileItem.strPath.Replace('\\', '/') + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
+                    fileItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + fileItem.strPath + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
                 }
                 else
                 {
@@ -132,7 +116,7 @@ namespace TinyFileManager.NET
             return arrLinks;
         }
 
-        public void UploadFile(HttpPostedFile fileUpload, string folderName)
+        internal override void UploadFile(HttpPostedFile fileUpload, string folderName)
         {
             //check file was submitted
             if ((fileUpload != null) && (fileUpload.ContentLength > 0))
@@ -189,7 +173,27 @@ namespace TinyFileManager.NET
         {
             return false;
         } // ThumbnailCallback
+        
+        internal override void DeleteFile(string fileUrl)
+        {
+            try
+            {
+                var fileName = Path.GetFileName(fileUrl);
 
-        public System.Drawing.Image thumb { get; set; }
+                //delete the main file
+                var blobName = "files/" +fileName;
+                var blob = blobContainer.GetBlockBlobReference(blobName);
+                blob.DeleteIfExists();
+
+                //delete the thumbnail
+                blobName = "thumbs/" + fileName;
+                blob = blobContainer.GetBlockBlobReference(blobName);
+                blob.DeleteIfExists();
+            }
+            catch
+            {
+                //TODO: set error
+            }
+        }
     }
 }

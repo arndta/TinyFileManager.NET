@@ -41,11 +41,14 @@
     <Setting Name="AzureBlobContainer" Type="System.String" Scope="Application">
       <Value Profile="(Default)">tfm</Value>
     </Setting>
+    <Setting Name="StorageMode" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Azure</Value>
+    </Setting>
     <Setting Name="UploadPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">files</Value>
+      <Value Profile="(Default)">resources\files</Value>
     </Setting>
     <Setting Name="ThumbPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">thumbs</Value>
+      <Value Profile="(Default)">resources\thumbs</Value>
     </Setting>
   </Settings>
 </SettingsFile>

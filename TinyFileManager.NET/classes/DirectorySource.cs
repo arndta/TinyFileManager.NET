@@ -7,41 +7,22 @@ using System.Web;
 
 namespace TinyFileManager.NET
 {
-    public class DirectorySource
+    public class DirectorySource: Source
     {
-        private string[] arrFolders;
-        private string[] arrFiles;
-        private string strCurrPath;
-        private string strCurrLink;
-        private bool boolOnlyImage;
-        private bool boolOnlyVideo;
-        private ArrayList arrLinks = new ArrayList();
-        private string physicalPath;
-        private string strApply;
-        private string strType;
-
         public DirectorySource(string currentPath, string currentLink, bool onlyImages, bool onlyVideos, string physicalPath, string selectFnString, string type)
-        {
-            strCurrPath = currentPath;
-            strCurrLink = currentLink;
-            boolOnlyImage = onlyImages;
-            boolOnlyVideo = onlyVideos;
-            this.physicalPath = physicalPath;
-            strApply = selectFnString;
-            strType = type;
+            : base(currentPath, currentLink, onlyImages, onlyVideos, physicalPath, selectFnString, type)
+        { }
 
+        internal override ArrayList GetLinks()
+        {
             AddFolders();
             AddFiles();
-        }
-
-        public ArrayList GetLinks()
-        {
             return arrLinks;
         }
         private void AddFiles()
         {
             // load files
-            arrFiles = Directory.GetFiles(clsConfig.strUploadPath + this.strCurrPath);
+            var arrFiles = Directory.GetFiles(clsConfig.strUploadPath + this.strCurrPath);
             foreach (string strF in arrFiles)
             {
                 var objFItem = new TinyFileManager.NET.clsFileItem();
@@ -131,7 +112,7 @@ namespace TinyFileManager.NET
         {
 
             //load folders
-            arrFolders = Directory.GetDirectories(clsConfig.strUploadPath + this.strCurrPath);
+            var arrFolders = Directory.GetDirectories(clsConfig.strUploadPath + this.strCurrPath);
             foreach (string strF in arrFolders)
             {
                 var objFItem = new TinyFileManager.NET.clsFileItem();
@@ -154,7 +135,7 @@ namespace TinyFileManager.NET
             }
         }
         
-        public void UploadFile(HttpPostedFile filUpload, string folderName)
+        internal override void UploadFile(HttpPostedFile filUpload, string folderName)
         {
             string strTargetFile;
             string strThumbFile;
@@ -203,5 +184,21 @@ namespace TinyFileManager.NET
         {
             return false;
         } // ThumbnailCallback
+        
+        internal override void DeleteFile(string fileName)
+        {
+            try
+            {
+                File.Delete(clsConfig.strUploadPath + "\\" + fileName);
+                if (File.Exists(clsConfig.strThumbPath + "\\" + fileName))
+                {
+                    File.Delete(clsConfig.strThumbPath + "\\" + fileName);
+                }
+            }
+            catch
+            {
+                //TODO: set error
+            }
+        }
     }
 }

@@ -231,6 +231,7 @@
     </Compile>
     <Compile Include="classes\DirectorySource.cs" />
     <Compile Include="classes\Helper.cs" />
+    <Compile Include="classes\Source.cs" />
     <Compile Include="dialog.aspx.cs">
       <DependentUpon>dialog.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
