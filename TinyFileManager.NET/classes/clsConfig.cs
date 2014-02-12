@@ -192,6 +192,43 @@ namespace TinyFileManager.NET
             }
         }
 
+        #region Azure info
+
+        /// <summary>
+        /// The connection information to the azure blob store
+        /// </summary>
+        public static string azureBlobStore
+        {
+            get
+            {
+                return Properties.Settings.Default.AzureBlobStore;
+            }
+        }
+
+        /// <summary>
+        /// The container in the azure blob store used for TFM
+        /// </summary>
+        public static string azureBlobContainer
+        {
+            get
+            {
+                return Properties.Settings.Default.AzureBlobContainer;
+            }
+        }
+
+        /// <summary>
+        /// The public url used to get files from the the azure blob store
+        /// </summary>
+        public static string azureBlobUrl
+        {
+            get
+            {
+                return Properties.Settings.Default.AzureBlobUrl;
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Returns document root
         /// </summary>

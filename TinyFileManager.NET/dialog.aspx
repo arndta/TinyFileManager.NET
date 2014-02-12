@@ -128,7 +128,7 @@
                                 // if file
                                 Response.Write(objF.strDownFormOpen);
                                 Response.Write("<div class=\"btn-group toolbox\">");
-                                Response.Write("<button type=\"submit\" title=\"Download\" class=\"btn\"><i class=\"icon-download\"></i></button>");
+                                Response.Write(objF.strDownBtn);
                                 Response.Write(objF.strPreviewLink);
                                 Response.Write(objF.strDeleteLink);
                                 Response.Write("</div>");

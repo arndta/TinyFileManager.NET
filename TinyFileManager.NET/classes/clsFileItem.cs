@@ -22,5 +22,6 @@ namespace TinyFileManager.NET
         public string strPreviewLink;
         public string strThumbImage;
         public string strDownFormOpen;
+        public string strDownBtn;
     }
 }
