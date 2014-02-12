@@ -11,30 +11,42 @@ namespace TinyFileManager.NET
     public class AzureSource
     {
         private CloudBlobClient blobClient;
+        private CloudBlobContainer blobContainer;
+
+        private string strCurrPath;
+        private string strCurrLink;
         private bool boolOnlyImage;
         private bool boolOnlyVideo;
         private ArrayList arrLinks = new ArrayList();
         private string strApply;
         private string strType;
+        private string physicalPath;
 
-        public AzureSource(string blobStore, string publicUrl, string container, bool onlyImages, bool onlyVideos, string selectFnString, string type)
+        public AzureSource(string currentPath, string currentLink, bool onlyImages, bool onlyVideos, string physicalPath, string selectFnString, string type)
         {
+            strCurrPath = currentPath;
+            strCurrLink = currentLink;
             boolOnlyImage = onlyImages;
             boolOnlyVideo = onlyVideos;
+            this.physicalPath = physicalPath;
             strApply = selectFnString;
             strType = type;
 
-            var storageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount.Parse(blobStore);
+            var storageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount.Parse(clsConfig.azureBlobStore);
             blobClient = storageAccount.CreateCloudBlobClient();
-            var blobContainer = blobClient.GetContainerReference(container);
+            blobContainer = blobClient.GetContainerReference(clsConfig.azureBlobContainer);
+            
+        }
 
+        public ArrayList GetLinks()
+        {
             var blobs = blobContainer.ListBlobs("files/");
             foreach (var blob in blobs)
             {
-                
+
                 var fileItem = new TinyFileManager.NET.clsFileItem();
                 string fileUrl = blob.Uri.ToString();
-                fileItem.strName = Path.GetFileNameWithoutExtension(fileUrl); 
+                fileItem.strName = Path.GetFileNameWithoutExtension(fileUrl);
                 fileItem.boolIsFolder = false;
                 //objFItem.intColNum = this.getNextColNum();
                 fileItem.strPath = fileUrl;
@@ -76,7 +88,7 @@ namespace TinyFileManager.NET
                 // get delete link
                 if (clsConfig.boolAllowDeleteFile)
                 {
-                    //fileItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfile&file=" + fileItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button\" onclick=\"return confirm('Are you sure to delete this file?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
+                    fileItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfile&file=" + fileItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button\" onclick=\"return confirm('Are you sure to delete this file?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
                 }
                 else
                 {
@@ -85,18 +97,18 @@ namespace TinyFileManager.NET
                 // get thumbnail image
                 if (fileItem.boolIsImage)
                 {
-                    fileItem.strThumbImage = clsConfig.azureBlobUrl + clsConfig.azureBlobContainer + "/thumbs/" + fileName; //todo:switch to azure vm as strPath is the full url now.
+                    fileItem.strThumbImage = clsConfig.azureBlobUrl + clsConfig.azureBlobContainer + "/thumbs/" + fileName;
                 }
                 else
                 {
-                    //if (File.Exists(Directory.GetParent(physicalPath).FullName + "\\img\\ico\\" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png"))
-                    //{
-                    //    fileItem.strThumbImage = "img/ico/" + Path.GetExtension(fileUrl).TrimStart('.').ToUpper() + ".png";
-                    //}
-                    //else
-                    //{
-                    //    fileItem.strThumbImage = "img/ico/Default.png";
-                    //}
+                    if (File.Exists(Directory.GetParent(physicalPath).FullName + "\\img\\ico\\" + Path.GetExtension(fileUrl).TrimStart('.').ToUpper() + ".png"))
+                    {
+                        fileItem.strThumbImage = "img/ico/" + Path.GetExtension(fileUrl).TrimStart('.').ToUpper() + ".png";
+                    }
+                    else
+                    {
+                        fileItem.strThumbImage = "img/ico/Default.png";
+                    }
                 }
 
                 fileItem.strDownFormOpen = "<form class=\"download-form\">";
@@ -117,11 +129,67 @@ namespace TinyFileManager.NET
                     this.arrLinks.Add(fileItem);
                 }
             }
-        }
-
-        public ArrayList GetLinks()
-        {
             return arrLinks;
         }
+
+        public void UploadFile(HttpPostedFile fileUpload, string folderName)
+        {
+            //check file was submitted
+            if ((fileUpload != null) && (fileUpload.ContentLength > 0))
+            {
+                var blobName = "files/" + fileUpload.FileName;
+                var blob = blobContainer.GetBlockBlobReference(blobName);
+
+                //make a copy of the file stream so we can use it twice.
+                var stream = new MemoryStream();
+                fileUpload.InputStream.CopyTo(stream);
+                stream.Position = 0;
+
+                blob.UploadFromStream(stream);
+
+                if (Helper.isImageFile(fileUpload.FileName))
+                {
+                    stream.Position = 0;
+                    this.createThumbnail(stream, fileUpload.FileName);
+                }
+            }
+        }
+        private void createThumbnail(Stream stream, string fileName)
+        {
+            // open image and get dimensions in pixels
+            var image = System.Drawing.Image.FromStream(stream);
+            var objUnits = System.Drawing.GraphicsUnit.Pixel;
+            var objRect = image.GetBounds(ref objUnits);
+
+            int intHeight = 0;
+            int intWidth = 0;
+            // what are we going to resize to, to fit inside 156x78
+            Helper.getProportionalResize(Convert.ToInt32(objRect.Width), Convert.ToInt32(objRect.Height), ref intWidth, ref intHeight);
+
+            // create thumbnail
+            var objCallback = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
+            var thumb = image.GetThumbnailImage(intWidth, intHeight, objCallback, IntPtr.Zero);
+
+            // finish up
+
+            var blobName = "thumbs/" + fileName;
+            var blob = blobContainer.GetBlockBlobReference(blobName);
+            using (var thumbStream = new MemoryStream())
+            {
+                thumb.Save(thumbStream, image.RawFormat);
+                thumbStream.Position = 0;
+                blob.UploadFromStream(thumbStream);
+            }
+
+            image.Dispose();
+            thumb.Dispose();
+
+        } // createThumbnail
+        private bool ThumbnailCallback()
+        {
+            return false;
+        } // ThumbnailCallback
+
+        public System.Drawing.Image thumb { get; set; }
     }
 }

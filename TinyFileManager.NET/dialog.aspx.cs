@@ -77,6 +77,9 @@ namespace TinyFileManager.NET
             //setup current link
             strCurrLink = "dialog.aspx?type=" + this.strType + "&editor=" + this.strEditor + "&lang=" + this.strLang;
 
+            //var source = new DirectorySource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
+            var source = new AzureSource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
+
             switch (strCmd)
             {
                 case "debugsettings":
@@ -123,21 +126,7 @@ namespace TinyFileManager.NET
                 case "upload":
                     strFolder = Request.Form["folder"] + "";
                     HttpPostedFile filUpload = Request.Files["file"];
-                    string strTargetFile;
-                    string strThumbFile;
-
-                    //check file was submitted
-                    if ((filUpload != null) && (filUpload.ContentLength > 0))
-                    {
-                        strTargetFile = clsConfig.strUploadPath + this.strFolder + filUpload.FileName;
-                        strThumbFile = clsConfig.strThumbPath + this.strFolder + filUpload.FileName;
-                        filUpload.SaveAs(strTargetFile);
-
-                        if (Helper.isImageFile(strTargetFile))
-                        {
-                            this.createThumbnail(strTargetFile, strThumbFile);
-                        }
-                    }
+                    source.UploadFile(filUpload, strFolder);
 
                     // end response
                     if (Request.Form["fback"] == "true")
@@ -205,9 +194,7 @@ namespace TinyFileManager.NET
                         this.objFItem.strLink = "<a title=\"Open\" href=\"" + this.strCurrLink + "&currpath=" + this.objFItem.strPath + "\"><img class=\"directory-img\" src=\"" + this.objFItem.strThumbImage + "\" alt=\"folder\" /><h3>..</h3></a>";
                         this.arrLinks.Add(objFItem);
                     }
-
-                    //var source = new DirectorySource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
-                    var source = new AzureSource(clsConfig.azureBlobStore, clsConfig.azureBlobUrl, clsConfig.azureBlobContainer, boolOnlyImage, boolOnlyVideo, strApply, strType);
+                    
                     this.arrLinks.AddRange(source.GetLinks());
 
                     break;
@@ -246,74 +233,7 @@ namespace TinyFileManager.NET
             return strRet;
         }   // getBreadCrumb 
         
-        private void createThumbnail(string strFilename, string strThumbFilename)
-        {
-            System.Drawing.Image.GetThumbnailImageAbort objCallback;
-            System.Drawing.Image objFSImage;
-            System.Drawing.Image objTNImage;
-            System.Drawing.RectangleF objRect;
-            System.Drawing.GraphicsUnit objUnits = System.Drawing.GraphicsUnit.Pixel;
-            int intHeight = 0;
-            int intWidth = 0;
-
-            // open image and get dimensions in pixels
-            objFSImage = System.Drawing.Image.FromFile(strFilename);
-            objRect = objFSImage.GetBounds(ref objUnits);
-
-            // what are we going to resize to, to fit inside 156x78
-            getProportionalResize(Convert.ToInt32(objRect.Width), Convert.ToInt32(objRect.Height), ref intWidth, ref intHeight);
-
-            // create thumbnail
-            objCallback = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
-            objTNImage = objFSImage.GetThumbnailImage(intWidth, intHeight, objCallback, IntPtr.Zero);
-
-            // finish up
-            objFSImage.Dispose();
-            objTNImage.Save(strThumbFilename);
-            objTNImage.Dispose();
-
-        } // createThumbnail
-
-        private void getProportionalResize(int intOldWidth, int intOldHeight, ref int intNewWidth, ref int intNewHeight)
-        {
-            int intHDiff = 0;
-            int intWDiff = 0;
-            decimal decProp = 0;
-            int intTargH = 78;
-            int intTargW = 156;
-
-            if ((intOldHeight <= intTargH) && (intOldWidth <= intTargW)) 
-            {
-                // no resize needed
-                intNewHeight = intOldHeight;
-                intNewWidth = intOldWidth;
-                return;
-            }
-
-            //get the differences between desired and current height and width
-            intHDiff = intOldHeight - intTargH;
-            intWDiff = intOldWidth - intTargW;
-
-            //whichever is the bigger difference is the chosen proportion
-            if (intHDiff > intWDiff) 
-            {
-                decProp = (decimal)intTargH / (decimal)intOldHeight;
-                intNewHeight = intTargH;
-                intNewWidth = Convert.ToInt32(Math.Round(intOldWidth * decProp, 0));
-            }
-            else
-            {
-                decProp = (decimal)intTargW / (decimal)intOldWidth;
-                intNewWidth = intTargW;
-                intNewHeight = Convert.ToInt32(Math.Round(intOldHeight * decProp, 0));
-            }
-        } // getProportionalResize
-
-        private bool ThumbnailCallback()
-        {
-            return false;
-        } // ThumbnailCallback
-
+        
         public string getEndOfLine(int intColNum) 
         {
             if (intColNum == 6)

@@ -38,7 +38,6 @@ namespace TinyFileManager.NET
         {
             return arrLinks;
         }
-
         private void AddFiles()
         {
             // load files
@@ -128,7 +127,6 @@ namespace TinyFileManager.NET
                 }
             }
         }
-
         private void AddFolders()
         {
 
@@ -155,5 +153,55 @@ namespace TinyFileManager.NET
                 this.arrLinks.Add(objFItem);
             }
         }
+        
+        public void UploadFile(HttpPostedFile filUpload, string folderName)
+        {
+            string strTargetFile;
+            string strThumbFile;
+
+            //check file was submitted
+            if ((filUpload != null) && (filUpload.ContentLength > 0))
+            {
+                strTargetFile = clsConfig.strUploadPath + folderName + filUpload.FileName;
+                strThumbFile = clsConfig.strThumbPath + folderName + filUpload.FileName;
+                filUpload.SaveAs(strTargetFile);
+
+                if (Helper.isImageFile(strTargetFile))
+                {
+                    this.createThumbnail(strTargetFile, strThumbFile);
+                }
+            }
+        }
+        private void createThumbnail(string strFilename, string strThumbFilename)
+        {
+            System.Drawing.Image.GetThumbnailImageAbort objCallback;
+            System.Drawing.Image objFSImage;
+            System.Drawing.Image objTNImage;
+            System.Drawing.RectangleF objRect;
+            System.Drawing.GraphicsUnit objUnits = System.Drawing.GraphicsUnit.Pixel;
+            int intHeight = 0;
+            int intWidth = 0;
+
+            // open image and get dimensions in pixels
+            objFSImage = System.Drawing.Image.FromFile(strFilename);
+            objRect = objFSImage.GetBounds(ref objUnits);
+
+            // what are we going to resize to, to fit inside 156x78
+            Helper.getProportionalResize(Convert.ToInt32(objRect.Width), Convert.ToInt32(objRect.Height), ref intWidth, ref intHeight);
+
+            // create thumbnail
+            objCallback = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
+            objTNImage = objFSImage.GetThumbnailImage(intWidth, intHeight, objCallback, IntPtr.Zero);
+
+            // finish up
+            objFSImage.Dispose();
+            objTNImage.Save(strThumbFilename);
+            objTNImage.Dispose();
+
+        } // createThumbnail
+        private bool ThumbnailCallback()
+        {
+            return false;
+        } // ThumbnailCallback
     }
 }

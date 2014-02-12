@@ -39,5 +39,41 @@ namespace TinyFileManager.NET
             intPosition = Array.IndexOf(clsConfig.arrAllowedMiscExtensions, Path.GetExtension(strFilename).TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of misc file extensions
         } // isMiscFile
+
+        
+        public static void getProportionalResize(int intOldWidth, int intOldHeight, ref int intNewWidth, ref int intNewHeight)
+        {
+            int intHDiff = 0;
+            int intWDiff = 0;
+            decimal decProp = 0;
+            int intTargH = 78;
+            int intTargW = 156;
+
+            if ((intOldHeight <= intTargH) && (intOldWidth <= intTargW))
+            {
+                // no resize needed
+                intNewHeight = intOldHeight;
+                intNewWidth = intOldWidth;
+                return;
+            }
+
+            //get the differences between desired and current height and width
+            intHDiff = intOldHeight - intTargH;
+            intWDiff = intOldWidth - intTargW;
+
+            //whichever is the bigger difference is the chosen proportion
+            if (intHDiff > intWDiff)
+            {
+                decProp = (decimal)intTargH / (decimal)intOldHeight;
+                intNewHeight = intTargH;
+                intNewWidth = Convert.ToInt32(Math.Round(intOldWidth * decProp, 0));
+            }
+            else
+            {
+                decProp = (decimal)intTargW / (decimal)intOldWidth;
+                intNewWidth = intTargW;
+                intNewHeight = Convert.ToInt32(Math.Round(intOldHeight * decProp, 0));
+            }
+        } // getProportionalResize
     }
 }
