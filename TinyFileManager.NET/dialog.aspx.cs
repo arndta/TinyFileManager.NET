@@ -77,6 +77,12 @@ namespace TinyFileManager.NET
             //setup current link
             strCurrLink = "dialog.aspx?type=" + this.strType + "&editor=" + this.strEditor + "&lang=" + this.strLang;
 
+            Source source;            
+            if (clsConfig.storageMode == clsConfig.StorageModeType.Azure)
+                source = new AzureSource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
+            else // (clsConfig.storageMode == "directory")
+                source = new DirectorySource(strCurrPath, strCurrLink, boolOnlyImage, boolOnlyVideo, Request.PhysicalPath, strApply, strType);
+
             switch (strCmd)
             {
                 case "debugsettings":
@@ -97,6 +103,9 @@ namespace TinyFileManager.NET
                     Response.Write("<b>ThumbURL:</b> " + clsConfig.strThumbURL + "<br>");
                     Response.Write("<b>UploadPath:</b> " + clsConfig.strUploadPath + "<br>");
                     Response.Write("<b>UploadURL:</b> " + clsConfig.strUploadURL + "<br>");
+                    Response.Write("<b>AzureBlobStore:</b> " + clsConfig.azureBlobStore + "<br>");
+                    Response.Write("<b>AzureBlobContainer:</b> " + clsConfig.azureBlobContainer + "<br>");
+                    Response.Write("<b>AzureBlobUrl:</b> " + clsConfig.azureBlobUrl + "<br>");
                     Response.End();
                     break;
                 case "createfolder":
@@ -120,21 +129,7 @@ namespace TinyFileManager.NET
                 case "upload":
                     strFolder = Request.Form["folder"] + "";
                     HttpPostedFile filUpload = Request.Files["file"];
-                    string strTargetFile;
-                    string strThumbFile;
-
-                    //check file was submitted
-                    if ((filUpload != null) && (filUpload.ContentLength > 0))
-                    {
-                        strTargetFile = clsConfig.strUploadPath + this.strFolder + filUpload.FileName;
-                        strThumbFile = clsConfig.strThumbPath + this.strFolder + filUpload.FileName;
-                        filUpload.SaveAs(strTargetFile);
-
-                        if (this.isImageFile(strTargetFile))
-                        {
-                            this.createThumbnail(strTargetFile, strThumbFile);
-                        }
-                    }
+                    source.UploadFile(filUpload, strFolder);
 
                     // end response
                     if (Request.Form["fback"] == "true")
@@ -160,18 +155,7 @@ namespace TinyFileManager.NET
                     break;
 
                 case "delfile":
-                    try
-                    {
-                        File.Delete(clsConfig.strUploadPath + "\\" + this.strFile);
-                        if (File.Exists(clsConfig.strThumbPath + "\\" + this.strFile))
-                        {
-                            File.Delete(clsConfig.strThumbPath + "\\" + this.strFile);
-                        }
-                    }
-                    catch
-                    {
-                        //TODO: set error
-                    }
+                    source.DeleteFile(strFile);
                     goto default;
 
                 case "delfolder":
@@ -202,115 +186,8 @@ namespace TinyFileManager.NET
                         this.objFItem.strLink = "<a title=\"Open\" href=\"" + this.strCurrLink + "&currpath=" + this.objFItem.strPath + "\"><img class=\"directory-img\" src=\"" + this.objFItem.strThumbImage + "\" alt=\"folder\" /><h3>..</h3></a>";
                         this.arrLinks.Add(objFItem);
                     }
-
-                    //load folders
-                    arrFolders = Directory.GetDirectories(clsConfig.strUploadPath + this.strCurrPath);
-                    foreach (string strF in arrFolders)
-                    {
-                        this.objFItem = new TinyFileManager.NET.clsFileItem();
-                        this.objFItem.strName = Path.GetFileName(strF);
-                        this.objFItem.boolIsFolder = true;
-                        this.objFItem.intColNum = this.getNextColNum();
-                        this.objFItem.strPath = this.strCurrPath + Path.GetFileName(strF);
-                        this.objFItem.strClassType = "dir";
-                        if (clsConfig.boolAllowDeleteFolder)
-                        {
-                            this.objFItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfolder&folder=" + this.objFItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button top-right\" onclick=\"return confirm('Are you sure to delete the folder and all the objects in it?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
-                        }
-                        else
-                        {
-                            this.objFItem.strDeleteLink = "<a class=\"btn erase-button top-right disabled\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
-                        }
-                        this.objFItem.strThumbImage = "img/ico/folder.png";
-                        this.objFItem.strLink = "<a title=\"Open\" href=\"" + this.strCurrLink + "&currpath=" + this.objFItem.strPath + "\"><img class=\"directory-img\" src=\"" + this.objFItem.strThumbImage + "\" alt=\"folder\" /><h3>" + this.objFItem.strName + "</h3></a>";
-                        this.arrLinks.Add(objFItem);
-                    }
-
-                    // load files
-                    arrFiles = Directory.GetFiles(clsConfig.strUploadPath + this.strCurrPath);
-                    foreach (string strF in arrFiles)
-                    {
-                        this.objFItem = new TinyFileManager.NET.clsFileItem();
-                        this.objFItem.strName = Path.GetFileNameWithoutExtension(strF);
-                        this.objFItem.boolIsFolder = false;
-                        this.objFItem.intColNum = this.getNextColNum();
-                        this.objFItem.strPath = this.strCurrPath + Path.GetFileName(strF);
-                        this.objFItem.boolIsImage = this.isImageFile(Path.GetFileName(strF));
-                        this.objFItem.boolIsVideo = this.isVideoFile(Path.GetFileName(strF));
-                        this.objFItem.boolIsMusic = this.isMusicFile(Path.GetFileName(strF));
-                        this.objFItem.boolIsMisc = this.isMiscFile(Path.GetFileName(strF));
-                        // get display class type
-                        if (this.objFItem.boolIsImage)
-                        {
-                            this.objFItem.strClassType = "2";
-                        }
-                        else
-                        {
-                            if (this.objFItem.boolIsMisc)
-                            {
-                                this.objFItem.strClassType = "3";
-                            }
-                            else
-                            {
-                                if (this.objFItem.boolIsMusic)
-                                {
-                                    this.objFItem.strClassType = "5";
-                                }
-                                else
-                                {
-                                    if (this.objFItem.boolIsVideo)
-                                    {
-                                        this.objFItem.strClassType = "4";
-                                    }
-                                    else
-                                    {
-                                        this.objFItem.strClassType = "1";
-                                    }
-                                }
-                            }
-                        }
-                        // get delete link
-                        if (clsConfig.boolAllowDeleteFile)
-                        {
-                            this.objFItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfile&file=" + this.objFItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button\" onclick=\"return confirm('Are you sure to delete this file?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
-                        }
-                        else
-                        {
-                            this.objFItem.strDeleteLink = "<a class=\"btn erase-button disabled\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
-                        }
-                        // get thumbnail image
-                        if (this.objFItem.boolIsImage)
-                        {
-                            this.objFItem.strThumbImage = clsConfig.strThumbURL + "/" + this.objFItem.strPath.Replace('\\', '/');
-                        }
-                        else
-                        {
-                            if (File.Exists(Directory.GetParent(Request.PhysicalPath).FullName + "\\img\\ico\\" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png"))
-                            {
-                                this.objFItem.strThumbImage = "img/ico/" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png";
-                            }
-                            else
-                            {
-                                this.objFItem.strThumbImage = "img/ico/Default.png";
-                            }
-                        }
-                        this.objFItem.strDownFormOpen = "<form action=\"dialog.aspx?cmd=download&file=" + this.objFItem.strPath + "\" method=\"post\" class=\"download-form\">";
-                        if (this.objFItem.boolIsImage)
-                        {
-                            this.objFItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
-                        }
-                        else
-                        {
-                            this.objFItem.strPreviewLink = "<a class=\"btn preview disabled\" title=\"Preview\"><i class=\"icon-eye-open\"></i></a>";
-                        }
-                        this.objFItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + this.objFItem.strThumbImage + "\" height=\"100\"><h4>" + this.objFItem.strName + "</h4></a>";
-
-                        // check to see if it's the type of file we are looking at
-                        if ((this.boolOnlyImage && this.objFItem.boolIsImage) || (this.boolOnlyVideo && this.objFItem.boolIsVideo) || (!this.boolOnlyImage && !this.boolOnlyVideo)) 
-                        {
-                            this.arrLinks.Add(objFItem);
-                        }
-                    } // foreach
+                    
+                    this.arrLinks.AddRange(source.GetLinks());
 
                     break;
             }   // switch
@@ -347,107 +224,8 @@ namespace TinyFileManager.NET
 
             return strRet;
         }   // getBreadCrumb 
-
-        private bool isImageFile(string strFilename)
-        {
-            int intPosition;
-
-            intPosition = Array.IndexOf(clsConfig.arrAllowedImageExtensions, Path.GetExtension(strFilename).TrimStart('.'));
-            return (intPosition > -1);  // if > -1, then it was found in the list of image file extensions
-        } // isImageFile
-
-        private bool isVideoFile(string strFilename)
-        {
-            int intPosition;
-
-            intPosition = Array.IndexOf(clsConfig.arrAllowedVideoExtensions, Path.GetExtension(strFilename).TrimStart('.'));
-            return (intPosition > -1);  // if > -1, then it was found in the list of video file extensions
-        } // isVideoFile
-
-        private bool isMusicFile(string strFilename)
-        {
-            int intPosition;
-
-            intPosition = Array.IndexOf(clsConfig.arrAllowedMusicExtensions, Path.GetExtension(strFilename).TrimStart('.'));
-            return (intPosition > -1);  // if > -1, then it was found in the list of music file extensions
-        } // isMusicFile
-
-        private bool isMiscFile(string strFilename)
-        {
-            int intPosition;
-
-            intPosition = Array.IndexOf(clsConfig.arrAllowedMiscExtensions, Path.GetExtension(strFilename).TrimStart('.'));
-            return (intPosition > -1);  // if > -1, then it was found in the list of misc file extensions
-        } // isMiscFile
-
-        private void createThumbnail(string strFilename, string strThumbFilename)
-        {
-            System.Drawing.Image.GetThumbnailImageAbort objCallback;
-            System.Drawing.Image objFSImage;
-            System.Drawing.Image objTNImage;
-            System.Drawing.RectangleF objRect;
-            System.Drawing.GraphicsUnit objUnits = System.Drawing.GraphicsUnit.Pixel;
-            int intHeight = 0;
-            int intWidth = 0;
-
-            // open image and get dimensions in pixels
-            objFSImage = System.Drawing.Image.FromFile(strFilename);
-            objRect = objFSImage.GetBounds(ref objUnits);
-
-            // what are we going to resize to, to fit inside 156x78
-            getProportionalResize(Convert.ToInt32(objRect.Width), Convert.ToInt32(objRect.Height), ref intWidth, ref intHeight);
-
-            // create thumbnail
-            objCallback = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
-            objTNImage = objFSImage.GetThumbnailImage(intWidth, intHeight, objCallback, IntPtr.Zero);
-
-            // finish up
-            objFSImage.Dispose();
-            objTNImage.Save(strThumbFilename);
-            objTNImage.Dispose();
-
-        } // createThumbnail
-
-        private void getProportionalResize(int intOldWidth, int intOldHeight, ref int intNewWidth, ref int intNewHeight)
-        {
-            int intHDiff = 0;
-            int intWDiff = 0;
-            decimal decProp = 0;
-            int intTargH = 78;
-            int intTargW = 156;
-
-            if ((intOldHeight <= intTargH) && (intOldWidth <= intTargW)) 
-            {
-                // no resize needed
-                intNewHeight = intOldHeight;
-                intNewWidth = intOldWidth;
-                return;
-            }
-
-            //get the differences between desired and current height and width
-            intHDiff = intOldHeight - intTargH;
-            intWDiff = intOldWidth - intTargW;
-
-            //whichever is the bigger difference is the chosen proportion
-            if (intHDiff > intWDiff) 
-            {
-                decProp = (decimal)intTargH / (decimal)intOldHeight;
-                intNewHeight = intTargH;
-                intNewWidth = Convert.ToInt32(Math.Round(intOldWidth * decProp, 0));
-            }
-            else
-            {
-                decProp = (decimal)intTargW / (decimal)intOldWidth;
-                intNewWidth = intTargW;
-                intNewHeight = Convert.ToInt32(Math.Round(intOldHeight * decProp, 0));
-            }
-        } // getProportionalResize
-
-        private bool ThumbnailCallback()
-        {
-            return false;
-        } // ThumbnailCallback
-
+        
+        
         public string getEndOfLine(int intColNum) 
         {
             if (intColNum == 6)

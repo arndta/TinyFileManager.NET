@@ -193,6 +193,64 @@ namespace TinyFileManager.NET
         }
 
         /// <summary>
+        /// Gets the storage mode the file manager is set to. (defaults to directory mode).
+        /// </summary>
+        public static StorageModeType storageMode
+        {
+            get
+            {
+                var strMode = Properties.Settings.Default.StorageMode;
+                var mode = StorageModeType.Directory;
+
+                if (strMode.ToLower() == "azure") mode = StorageModeType.Azure;
+
+                return mode;
+            }
+        }
+        public enum StorageModeType
+        {
+            Azure,
+            Directory
+        }
+
+        #region Azure info
+
+        /// <summary>
+        /// The connection information to the azure blob store
+        /// </summary>
+        public static string azureBlobStore
+        {
+            get
+            {
+                return Properties.Settings.Default.AzureBlobStore;
+            }
+        }
+
+        /// <summary>
+        /// The container in the azure blob store used for TFM
+        /// </summary>
+        public static string azureBlobContainer
+        {
+            get
+            {
+                return Properties.Settings.Default.AzureBlobContainer;
+            }
+        }
+
+        /// <summary>
+        /// The public url used to get files from the the azure blob store
+        /// </summary>
+        public static string azureBlobUrl
+        {
+            get
+            {
+                return Properties.Settings.Default.AzureBlobUrl;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
         /// Returns document root
         /// </summary>
         public static string strDocRoot
@@ -288,7 +346,16 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToBoolean(Properties.Settings.Default.AllowCreateFolder);
+                bool allow = false;
+                if (storageMode == StorageModeType.Azure)
+                {
+                    allow = false;
+                }
+                else{
+                    allow = Convert.ToBoolean(Properties.Settings.Default.AllowCreateFolder);
+                }
+
+                return allow;
             }
         }
 
@@ -299,7 +366,17 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFolder);
+                bool allow = false;
+                if (storageMode == StorageModeType.Azure)
+                {
+                    allow = false;
+                }
+                else
+                {
+                    allow = Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFolder);
+                }
+
+                return allow;
             }
         }
         #endregion
