@@ -80,23 +80,111 @@ namespace TinyFileManager.NET
             switch (strCmd)
             {
                 case "debugsettings":
-                    Response.Write("<b>AllowCreateFolder:</b> " + clsConfig.boolAllowCreateFolder + "<br>");
-                    Response.Write("<b>AllowDeleteFile:</b> " + clsConfig.boolAllowDeleteFile + "<br>");
-                    Response.Write("<b>AllowDeleteFolder:</b> " + clsConfig.boolAllowDeleteFolder + "<br>");
-                    Response.Write("<b>AllowUploadFile:</b> " + clsConfig.boolAllowUploadFile + "<br>");
-                    Response.Write("<b>MaxUploadSizeMb:</b> " + clsConfig.intMaxUploadSizeMb + "<br>");
-                    Response.Write("<b>AllowedAllExtensions:</b> " + clsConfig.strAllowedAllExtensions + "<br>");
-                    Response.Write("<b>AllowedFileExtensions:</b> " + clsConfig.strAllowedFileExtensions + "<br>");
-                    Response.Write("<b>AllowedImageExtensions:</b> " + clsConfig.strAllowedImageExtensions + "<br>");
-                    Response.Write("<b>AllowedMiscExtensions:</b> " + clsConfig.strAllowedMiscExtensions + "<br>");
-                    Response.Write("<b>AllowedMusicExtensions:</b> " + clsConfig.strAllowedMusicExtensions + "<br>");
-                    Response.Write("<b>AllowedVideoExtensions:</b> " + clsConfig.strAllowedVideoExtensions + "<br>");
-                    Response.Write("<b>BaseURL:</b> " + clsConfig.strBaseURL + "<br>");
-                    Response.Write("<b>DocRoot:</b> " + clsConfig.strDocRoot + "<br>");
-                    Response.Write("<b>ThumbPath:</b> " + clsConfig.strThumbPath + "<br>");
-                    Response.Write("<b>ThumbURL:</b> " + clsConfig.strThumbURL + "<br>");
-                    Response.Write("<b>UploadPath:</b> " + clsConfig.strUploadPath + "<br>");
-                    Response.Write("<b>UploadURL:</b> " + clsConfig.strUploadURL + "<br>");
+                    Response.Write("<style>");
+                    Response.Write("body {font-family: Verdana; font-size: 10pt;}");
+                    Response.Write(".table {display: table; border-collapse: collapse; margin: 20px; background-color: #e7e5e5;}");
+                    Response.Write(".tcaption {display: table-caption; padding: 5px; font-size: 14pt; font-weight: bold; background-color: #9fcff7;}");
+                    Response.Write(".tr {display: table-row;}");
+                    Response.Write(".tr:hover {background-color: #f0f2f3;}");
+                    Response.Write(".td {display: table-cell; padding: 5px; border: 1px solid #a19e9e;}");
+                    Response.Write("</style>");
+
+                    Response.Write("<div class=\"table\">");   //start table
+
+                    Response.Write("<div class=\"tcaption\">Operating Settings</div>");  //caption
+
+                    Response.Write("<div class=\"tbody\">");  //start body
+
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowCreateFolder:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowCreateFolder + "</div>");
+                    Response.Write("</div>");   //end row
+
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowDeleteFile:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowDeleteFile + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowDeleteFolder:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowDeleteFolder + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowUploadFile:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowUploadFile + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>MaxUploadSizeMb:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.intMaxUploadSizeMb + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowedAllExtensions:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedAllExtensions + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowedFileExtensions:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedFileExtensions + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowedImageExtensions:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedImageExtensions + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowedMiscExtensions:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedMiscExtensions + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowedMusicExtensions:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedMusicExtensions + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>AllowedVideoExtensions:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedVideoExtensions + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>BaseURL:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strBaseURL + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>DocRoot:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strDocRoot + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>ThumbPath:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strThumbPath + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>ThumbURL:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strThumbURL + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>UploadPath:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strUploadPath + "</div>");
+                    Response.Write("</div>");   //end row
+                    
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>UploadURL:</b></div>");
+                    Response.Write("<div class=\"td\">" + clsConfig.strUploadURL + "</div>");
+                    Response.Write("</div>");   //end row
+
+                    Response.Write("</div>");   //end body
+                    Response.Write("</div>");   //end table
+                    
+                    
+
                     Response.End();
                     break;
                 case "createfolder":
