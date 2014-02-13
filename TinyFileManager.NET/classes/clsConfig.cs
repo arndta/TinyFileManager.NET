@@ -199,8 +199,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                //return HttpContext.Current.Request.ServerVariables["APPL_PHYSICAL_PATH"].TrimEnd('\\');
-                return HttpContext.Current.Server.MapPath("/").TrimEnd('\\');
+                if (Properties.Settings.Default.RootPath != "")
+                {
+                    return Properties.Settings.Default.RootPath.TrimEnd('\\');
+                }
+                else
+                {
+                    return HttpContext.Current.Server.MapPath("/").TrimEnd('\\');
+                }
             }
         }
 
@@ -211,7 +217,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority.TrimEnd('/');
+                if (Properties.Settings.Default.RootURL != "") 
+                {
+                    return Properties.Settings.Default.RootURL.TrimEnd('/');
+                } 
+                else 
+                {
+                    return HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority.TrimEnd('/');
+                }
             }
         }
 
