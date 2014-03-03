@@ -16,7 +16,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToInt32(Properties.Settings.Default.MaxUploadSizeMb);
+                if (HttpContext.Current.Session["TFM_MaxUploadSizeMb"] != null)
+                {
+                    return Convert.ToInt32(HttpContext.Current.Session["TFM_MaxUploadSizeMb"]);
+                }
+                else
+                {
+                    return Convert.ToInt32(Properties.Settings.Default.MaxUploadSizeMb);
+                }
             }
         }
 
@@ -27,7 +34,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Properties.Settings.Default.AllowedImageExtensions;
+                if (HttpContext.Current.Session["TFM_AllowedImageExtensions"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_AllowedImageExtensions"]);
+                }
+                else
+                {
+                    return Properties.Settings.Default.AllowedImageExtensions;
+                }
             }
         }
 
@@ -49,7 +63,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Properties.Settings.Default.AllowedFileExtensions;
+                if (HttpContext.Current.Session["TFM_AllowedFileExtensions"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_AllowedFileExtensions"]);
+                }
+                else
+                {
+                    return Properties.Settings.Default.AllowedFileExtensions;
+                }
             }
         }
 
@@ -71,7 +92,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Properties.Settings.Default.AllowedVideoExtensions;
+                if (HttpContext.Current.Session["TFM_AllowedVideoExtensions"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_AllowedVideoExtensions"]);
+                }
+                else
+                {
+                    return Properties.Settings.Default.AllowedVideoExtensions;
+                }
             }
         }
 
@@ -93,7 +121,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Properties.Settings.Default.AllowedMusicExtensions;
+                if (HttpContext.Current.Session["TFM_AllowedMusicExtensions"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_AllowedMusicExtensions"]);
+                }
+                else
+                {
+                    return Properties.Settings.Default.AllowedMusicExtensions;
+                }
             }
         }
 
@@ -115,7 +150,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Properties.Settings.Default.AllowedMiscExtensions;
+                if (HttpContext.Current.Session["TFM_AllowedMiscExtensions"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_AllowedMiscExtensions"]);
+                }
+                else
+                {
+                    return Properties.Settings.Default.AllowedMiscExtensions;
+                }
             }
         }
 
@@ -199,13 +241,20 @@ namespace TinyFileManager.NET
         {
             get
             {
-                if (Properties.Settings.Default.RootPath != "")
+                if (HttpContext.Current.Session["TFM_RootPath"] != null)
                 {
-                    return Properties.Settings.Default.RootPath.TrimEnd('\\');
+                    return Convert.ToString(HttpContext.Current.Session["TFM_RootPath"]).TrimEnd('\\');
                 }
                 else
                 {
-                    return HttpContext.Current.Server.MapPath("/").TrimEnd('\\');
+                    if (Properties.Settings.Default.RootPath != "")
+                    {
+                        return Properties.Settings.Default.RootPath.TrimEnd('\\');
+                    }
+                    else
+                    {
+                        return HttpContext.Current.Server.MapPath("/").TrimEnd('\\');
+                    }
                 }
             }
         }
@@ -217,13 +266,20 @@ namespace TinyFileManager.NET
         {
             get
             {
-                if (Properties.Settings.Default.RootURL != "") 
+                if (HttpContext.Current.Session["TFM_RootURL"] != null)
                 {
-                    return Properties.Settings.Default.RootURL.TrimEnd('/');
-                } 
-                else 
+                    return Convert.ToString(HttpContext.Current.Session["TFM_RootURL"]).TrimEnd('/');
+                }
+                else
                 {
-                    return HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority.TrimEnd('/');
+                    if (Properties.Settings.Default.RootURL != "")
+                    {
+                        return Properties.Settings.Default.RootURL.TrimEnd('/');
+                    }
+                    else
+                    {
+                        return HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority.TrimEnd('/');
+                    }
                 }
             }
         }
@@ -235,7 +291,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return clsConfig.strDocRoot + "\\" + Properties.Settings.Default.UploadPath.TrimEnd('\\') + "\\";
+                if (HttpContext.Current.Session["TFM_UploadPath"] != null)
+                {
+                    return clsConfig.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).TrimEnd('\\') + "\\";
+                }
+                else
+                {
+                    return clsConfig.strDocRoot + "\\" + Properties.Settings.Default.UploadPath.TrimEnd('\\') + "\\";
+                }
             }
         }
 
@@ -246,7 +309,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return clsConfig.strDocRoot + "\\" + Properties.Settings.Default.ThumbPath.TrimEnd('\\') + "\\";
+                if (HttpContext.Current.Session["TFM_ThumbPath"] != null)
+                {
+                    return clsConfig.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_ThumbPath"]).TrimEnd('\\') + "\\";
+                }
+                else
+                {
+                    return clsConfig.strDocRoot + "\\" + Properties.Settings.Default.ThumbPath.TrimEnd('\\') + "\\";
+                }
             }
         }
 
@@ -257,7 +327,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return clsConfig.strBaseURL + "/" + Properties.Settings.Default.UploadPath.Replace('\\', '/');
+                if (HttpContext.Current.Session["TFM_UploadPath"] != null)
+                {
+                    return clsConfig.strBaseURL + "/" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).Replace('\\', '/');
+                }
+                else
+                {
+                    return clsConfig.strBaseURL + "/" + Properties.Settings.Default.UploadPath.Replace('\\', '/');
+                }
             }
         }
 
@@ -268,7 +345,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return clsConfig.strBaseURL + "/" + Properties.Settings.Default.ThumbPath.Replace('\\', '/');
+                if (HttpContext.Current.Session["TFM_ThumbPath"] != null)
+                {
+                    return clsConfig.strBaseURL + "/" + Convert.ToString(HttpContext.Current.Session["TFM_ThumbPath"]).Replace('\\', '/');
+                }
+                else
+                {
+                    return clsConfig.strBaseURL + "/" + Properties.Settings.Default.ThumbPath.Replace('\\', '/');
+                }
             }
         }
 
@@ -279,7 +363,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToBoolean(Properties.Settings.Default.AllowUploadFile);
+                if (HttpContext.Current.Session["TFM_AllowUploadFile"] != null)
+                {
+                    return Convert.ToBoolean(HttpContext.Current.Session["TFM_AllowUploadFile"]); ;
+                }
+                else
+                {
+                    return Convert.ToBoolean(Properties.Settings.Default.AllowUploadFile);
+                }
             }
         }
 
@@ -290,7 +381,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFile);
+                if (HttpContext.Current.Session["TFM_AllowDeleteFile"] != null)
+                {
+                    return Convert.ToBoolean(HttpContext.Current.Session["TFM_AllowDeleteFile"]); ;
+                }
+                else
+                {
+                    return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFile);
+                }
             }
         }
 
@@ -301,7 +399,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToBoolean(Properties.Settings.Default.AllowCreateFolder);
+                if (HttpContext.Current.Session["TFM_AllowCreateFolder"] != null)
+                {
+                    return Convert.ToBoolean(HttpContext.Current.Session["TFM_AllowCreateFolder"]); ;
+                }
+                else
+                {
+                    return Convert.ToBoolean(Properties.Settings.Default.AllowCreateFolder);
+                }
             }
         }
 
@@ -312,7 +417,14 @@ namespace TinyFileManager.NET
         {
             get
             {
-                return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFolder);
+                if (HttpContext.Current.Session["TFM_AllowDeleteFolder"] != null)
+                {
+                    return Convert.ToBoolean(HttpContext.Current.Session["TFM_AllowDeleteFolder"]); ;
+                }
+                else
+                {
+                    return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFolder);
+                }
             }
         }
         #endregion
