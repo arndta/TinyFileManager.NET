@@ -369,6 +369,14 @@ namespace TinyFileManager.NET
                         // get thumbnail image
                         if (this.objFItem.boolIsImage)
                         {
+                            // first check to see if thumb exists
+                            if (!File.Exists(clsConfig.strThumbPath + this.objFItem.strPath))
+                            {
+                                // thumb doesn't exist, create it
+                                strTargetFile = clsConfig.strUploadPath + this.objFItem.strPath;
+                                strThumbFile = clsConfig.strThumbPath + this.objFItem.strPath;
+                                this.createThumbnail(strTargetFile, strThumbFile);
+                            }
                             this.objFItem.strThumbImage = clsConfig.strThumbURL + "/" + this.objFItem.strPath.Replace('\\', '/');
                         }
                         else
