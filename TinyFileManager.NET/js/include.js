@@ -57,7 +57,7 @@ function apply(file, type_file) {
     var closed = window.parent.document.getElementsByClassName('mce-tinyfilemanager.net');
     var ext=file.split('.').pop();
     var fill='';
-    if($.inArray(ext, ext_img) > -1){
+    if($.inArray(ext.toLowerCase(), ext_img) > -1){
         fill=$("<img />",{"src":file});
     }else{
         fill=$("<a />").attr("href", file).text(file.replace(/\..+$/, ''));

@@ -14,9 +14,9 @@
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/bootstrap-lightbox.min.js"></script>
 		<script type="text/javascript" src="js/dropzone.min.js"></script>
-		<script>
+		<script type="text/javascript">
 	    	var ext_img=new Array(<% Response.Write(TinyFileManager.NET.clsConfig.strAllowedImageExtensions); %>);
-	    	var allowed_ext=new Array(<% Response.Write(TinyFileManager.NET.clsConfig.strAllowedAllExtensions); %>);
+	    	var allowed_ext=new Array(<% Response.Write(this.strAllowedFileExt); %>);
             var track = '<% Response.Write(this.strEditor); %>';
             var curr_dir = '<% Response.Write(this.strCurrPath.Replace("\\", "\\\\")); %>';
 
@@ -30,7 +30,7 @@
 				maxFilesize: <% Response.Write(TinyFileManager.NET.clsConfig.intMaxUploadSizeMb); %>, // MB
 				accept: function(file, done) {
 				    var extension=file.name.split('.').pop();
-				    if ($.inArray(extension, allowed_ext) > -1) {
+				    if ($.inArray(extension.toLowerCase(), allowed_ext) > -1) {
 				        done();
 				    } else { 
                         done("File extension is not allowed"); 

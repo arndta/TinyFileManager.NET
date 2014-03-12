@@ -22,6 +22,7 @@ namespace TinyFileManager.NET
         public string strCurrPath;
         public string strCurrLink;      // dialog.aspx?editor=.... for simplicity
         public ArrayList arrLinks = new ArrayList();
+        public string strAllowedFileExt;
 
         private int intColNum;
         private string[] arrFolders;
@@ -57,19 +58,23 @@ namespace TinyFileManager.NET
                 case "1":
                     this.strApply = "apply_img";
                     this.boolOnlyImage = true;
+                    this.strAllowedFileExt = clsConfig.strAllowedImageExtensions;
                     break;
                 case "2":
                     this.strApply = "apply_link";
+                    this.strAllowedFileExt = clsConfig.strAllowedAllExtensions;
                     break;
                 default:
                     if (Convert.ToInt32(this.strType) >= 3)
                     {
                         this.strApply = "apply_video";
                         this.boolOnlyVideo = true;
+                        this.strAllowedFileExt = clsConfig.strAllowedVideoExtensions;
                     }
                     else
                     {
                         this.strApply = "apply";
+                        this.strAllowedFileExt = clsConfig.strAllowedAllExtensions;
                     }
                     break;
             }
@@ -321,89 +326,90 @@ namespace TinyFileManager.NET
                         this.objFItem = new TinyFileManager.NET.clsFileItem();
                         this.objFItem.strName = Path.GetFileNameWithoutExtension(strF);
                         this.objFItem.boolIsFolder = false;
-                        this.objFItem.intColNum = this.getNextColNum();
                         this.objFItem.strPath = this.strCurrPath + Path.GetFileName(strF);
                         this.objFItem.boolIsImage = this.isImageFile(Path.GetFileName(strF));
                         this.objFItem.boolIsVideo = this.isVideoFile(Path.GetFileName(strF));
                         this.objFItem.boolIsMusic = this.isMusicFile(Path.GetFileName(strF));
                         this.objFItem.boolIsMisc = this.isMiscFile(Path.GetFileName(strF));
-                        // get display class type
-                        if (this.objFItem.boolIsImage)
-                        {
-                            this.objFItem.strClassType = "2";
-                        }
-                        else
-                        {
-                            if (this.objFItem.boolIsMisc)
-                            {
-                                this.objFItem.strClassType = "3";
-                            }
-                            else
-                            {
-                                if (this.objFItem.boolIsMusic)
-                                {
-                                    this.objFItem.strClassType = "5";
-                                }
-                                else
-                                {
-                                    if (this.objFItem.boolIsVideo)
-                                    {
-                                        this.objFItem.strClassType = "4";
-                                    }
-                                    else
-                                    {
-                                        this.objFItem.strClassType = "1";
-                                    }
-                                }
-                            }
-                        }
-                        // get delete link
-                        if (clsConfig.boolAllowDeleteFile)
-                        {
-                            this.objFItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfile&file=" + this.objFItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button\" onclick=\"return confirm('Are you sure to delete this file?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
-                        }
-                        else
-                        {
-                            this.objFItem.strDeleteLink = "<a class=\"btn erase-button disabled\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
-                        }
-                        // get thumbnail image
-                        if (this.objFItem.boolIsImage)
-                        {
-                            // first check to see if thumb exists
-                            if (!File.Exists(clsConfig.strThumbPath + this.objFItem.strPath))
-                            {
-                                // thumb doesn't exist, create it
-                                strTargetFile = clsConfig.strUploadPath + this.objFItem.strPath;
-                                strThumbFile = clsConfig.strThumbPath + this.objFItem.strPath;
-                                this.createThumbnail(strTargetFile, strThumbFile);
-                            }
-                            this.objFItem.strThumbImage = clsConfig.strThumbURL + "/" + this.objFItem.strPath.Replace('\\', '/');
-                        }
-                        else
-                        {
-                            if (File.Exists(Directory.GetParent(Request.PhysicalPath).FullName + "\\img\\ico\\" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png"))
-                            {
-                                this.objFItem.strThumbImage = "img/ico/" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png";
-                            }
-                            else
-                            {
-                                this.objFItem.strThumbImage = "img/ico/Default.png";
-                            }
-                        }
-                        this.objFItem.strDownFormOpen = "<form action=\"dialog.aspx?cmd=download&file=" + this.objFItem.strPath + "\" method=\"post\" class=\"download-form\">";
-                        if (this.objFItem.boolIsImage)
-                        {
-                            this.objFItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
-                        }
-                        else
-                        {
-                            this.objFItem.strPreviewLink = "<a class=\"btn preview disabled\" title=\"Preview\"><i class=\"icon-eye-open\"></i></a>";
-                        }
-                        this.objFItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + this.objFItem.strThumbImage + "\" height=\"100\"><h4>" + this.objFItem.strName + "</h4></a>";
 
                         // check to see if it's the type of file we are looking at
                         if ((this.boolOnlyImage && this.objFItem.boolIsImage) || (this.boolOnlyVideo && this.objFItem.boolIsVideo) || (!this.boolOnlyImage && !this.boolOnlyVideo)) 
                         {
+                            this.objFItem.intColNum = this.getNextColNum();
+                            // get display class type
+                            if (this.objFItem.boolIsImage)
+                            {
+                                this.objFItem.strClassType = "2";
+                            }
+                            else
+                            {
+                                if (this.objFItem.boolIsMisc)
+                                {
+                                    this.objFItem.strClassType = "3";
+                                }
+                                else
+                                {
+                                    if (this.objFItem.boolIsMusic)
+                                    {
+                                        this.objFItem.strClassType = "5";
+                                    }
+                                    else
+                                    {
+                                        if (this.objFItem.boolIsVideo)
+                                        {
+                                            this.objFItem.strClassType = "4";
+                                        }
+                                        else
+                                        {
+                                            this.objFItem.strClassType = "1";
+                                        }
+                                    }
+                                }
+                            }
+                            // get delete link
+                            if (clsConfig.boolAllowDeleteFile)
+                            {
+                                this.objFItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfile&file=" + this.objFItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button\" onclick=\"return confirm('Are you sure to delete this file?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
+                            }
+                            else
+                            {
+                                this.objFItem.strDeleteLink = "<a class=\"btn erase-button disabled\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
+                            }
+                            // get thumbnail image
+                            if (this.objFItem.boolIsImage)
+                            {
+                                // first check to see if thumb exists
+                                if (!File.Exists(clsConfig.strThumbPath + this.objFItem.strPath))
+                                {
+                                    // thumb doesn't exist, create it
+                                    strTargetFile = clsConfig.strUploadPath + this.objFItem.strPath;
+                                    strThumbFile = clsConfig.strThumbPath + this.objFItem.strPath;
+                                    this.createThumbnail(strTargetFile, strThumbFile);
+                                }
+                                this.objFItem.strThumbImage = clsConfig.strThumbURL + "/" + this.objFItem.strPath.Replace('\\', '/');
+                            }
+                            else
+                            {
+                                if (File.Exists(Directory.GetParent(Request.PhysicalPath).FullName + "\\img\\ico\\" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png"))
+                                {
+                                    this.objFItem.strThumbImage = "img/ico/" + Path.GetExtension(strF).TrimStart('.').ToUpper() + ".png";
+                                }
+                                else
+                                {
+                                    this.objFItem.strThumbImage = "img/ico/Default.png";
+                                }
+                            }
+                            this.objFItem.strDownFormOpen = "<form action=\"dialog.aspx?cmd=download&file=" + this.objFItem.strPath + "\" method=\"post\" class=\"download-form\">";
+                            if (this.objFItem.boolIsImage)
+                            {
+                                this.objFItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
+                            }
+                            else
+                            {
+                                this.objFItem.strPreviewLink = "<a class=\"btn preview disabled\" title=\"Preview\"><i class=\"icon-eye-open\"></i></a>";
+                            }
+                            this.objFItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + this.objFItem.strThumbImage + "\" height=\"100\"><h4>" + this.objFItem.strName + "</h4></a>";
+
                             this.arrLinks.Add(objFItem);
                         }
                     } // foreach
