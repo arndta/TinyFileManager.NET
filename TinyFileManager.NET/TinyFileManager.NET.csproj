@@ -61,6 +61,7 @@
     <Reference Include="System.Web.ApplicationServices" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="classes\clsProfile.cs" />
     <Content Include="css\basic.css" />
     <Content Include="css\bootstrap-lightbox.min.css" />
     <Content Include="css\bootstrap.min.css" />
@@ -185,7 +186,6 @@
     <Content Include="js\bootstrap-lightbox.min.js" />
     <Content Include="js\bootstrap.min.js" />
     <Content Include="js\dropzone.min.js" />
-    <Content Include="js\include.js" />
     <Content Include="js\jquery.1.9.1.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

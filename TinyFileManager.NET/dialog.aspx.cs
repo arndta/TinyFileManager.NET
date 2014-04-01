@@ -23,6 +23,7 @@ namespace TinyFileManager.NET
         public string strCurrLink;      // dialog.aspx?editor=.... for simplicity
         public ArrayList arrLinks = new ArrayList();
         public string strAllowedFileExt;
+        public clsConfig objConfig = null;
 
         private int intColNum;
         private string[] arrFolders;
@@ -30,6 +31,7 @@ namespace TinyFileManager.NET
         private TinyFileManager.NET.clsFileItem objFItem;
         private bool boolOnlyImage;
         private bool boolOnlyVideo;
+        private string strProfile;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -41,6 +43,10 @@ namespace TinyFileManager.NET
             strLang = Request.QueryString["lang"] + "";      //not used right now, but grab it
             strEditor = Request.QueryString["editor"] + "";
             strCurrPath = Request.QueryString["currpath"] + "";
+            strProfile = Request.QueryString["profile"] + "";
+
+            // load config
+            this.objConfig = new clsConfig(strProfile);
 
             //check inputs
             if (this.strCurrPath.Length > 0)
@@ -58,23 +64,23 @@ namespace TinyFileManager.NET
                 case "1":
                     this.strApply = "apply_img";
                     this.boolOnlyImage = true;
-                    this.strAllowedFileExt = clsConfig.strAllowedImageExtensions;
+                    this.strAllowedFileExt = this.objConfig.strAllowedImageExtensions;
                     break;
                 case "2":
                     this.strApply = "apply_link";
-                    this.strAllowedFileExt = clsConfig.strAllowedAllExtensions;
+                    this.strAllowedFileExt = this.objConfig.strAllowedAllExtensions;
                     break;
                 default:
                     if (Convert.ToInt32(this.strType) >= 3)
                     {
                         this.strApply = "apply_video";
                         this.boolOnlyVideo = true;
-                        this.strAllowedFileExt = clsConfig.strAllowedVideoExtensions;
+                        this.strAllowedFileExt = this.objConfig.strAllowedVideoExtensions;
                     }
                     else
                     {
                         this.strApply = "apply";
-                        this.strAllowedFileExt = clsConfig.strAllowedAllExtensions;
+                        this.strAllowedFileExt = this.objConfig.strAllowedAllExtensions;
                     }
                     break;
             }
@@ -102,87 +108,87 @@ namespace TinyFileManager.NET
 
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowCreateFolder:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowCreateFolder + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.boolAllowCreateFolder + "</div>");
                     Response.Write("</div>");   //end row
 
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowDeleteFile:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowDeleteFile + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.boolAllowDeleteFile + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowDeleteFolder:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowDeleteFolder + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.boolAllowDeleteFolder + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowUploadFile:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.boolAllowUploadFile + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.boolAllowUploadFile + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>MaxUploadSizeMb:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.intMaxUploadSizeMb + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.intMaxUploadSizeMb + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowedAllExtensions:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedAllExtensions + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strAllowedAllExtensions + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowedFileExtensions:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedFileExtensions + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strAllowedFileExtensions + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowedImageExtensions:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedImageExtensions + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strAllowedImageExtensions + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowedMiscExtensions:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedMiscExtensions + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strAllowedMiscExtensions + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowedMusicExtensions:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedMusicExtensions + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strAllowedMusicExtensions + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>AllowedVideoExtensions:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strAllowedVideoExtensions + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strAllowedVideoExtensions + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>BaseURL:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strBaseURL + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strBaseURL + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>DocRoot:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strDocRoot + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strDocRoot + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>ThumbPath:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strThumbPath + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strThumbPath + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>ThumbURL:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strThumbURL + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strThumbURL + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>UploadPath:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strUploadPath + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strUploadPath + "</div>");
                     Response.Write("</div>");   //end row
                     
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>UploadURL:</b></div>");
-                    Response.Write("<div class=\"td\">" + clsConfig.strUploadURL + "</div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strUploadURL + "</div>");
                     Response.Write("</div>");   //end row
 
                     Response.Write("</div>");   //end body
@@ -198,8 +204,8 @@ namespace TinyFileManager.NET
                         strFolder = Request.Form["folder"] + "";
                         //forge ahead without checking for existence
                         //catch will save us
-                        Directory.CreateDirectory(clsConfig.strUploadPath + "\\" + strFolder);
-                        Directory.CreateDirectory(clsConfig.strThumbPath + "\\" + strFolder);
+                        Directory.CreateDirectory(this.objConfig.strUploadPath + "\\" + strFolder);
+                        Directory.CreateDirectory(this.objConfig.strThumbPath + "\\" + strFolder);
 
                         // end response, since it's an ajax call
                         Response.End();
@@ -219,8 +225,8 @@ namespace TinyFileManager.NET
                     //check file was submitted
                     if ((filUpload != null) && (filUpload.ContentLength > 0))
                     {
-                        strTargetFile = clsConfig.strUploadPath + this.strFolder + filUpload.FileName;
-                        strThumbFile = clsConfig.strThumbPath + this.strFolder + filUpload.FileName;
+                        strTargetFile = this.objConfig.strUploadPath + this.strFolder + filUpload.FileName;
+                        strThumbFile = this.objConfig.strThumbPath + this.strFolder + filUpload.FileName;
                         filUpload.SaveAs(strTargetFile);
 
                         if (this.isImageFile(strTargetFile))
@@ -242,23 +248,23 @@ namespace TinyFileManager.NET
                     break;
 
                 case "download":
-                    FileInfo objFile = new FileInfo(clsConfig.strUploadPath + "\\" + this.strFile);
+                    FileInfo objFile = new FileInfo(this.objConfig.strUploadPath + "\\" + this.strFile);
                     Response.ClearHeaders();
                     Response.AddHeader("Pragma", "private");
                     Response.AddHeader("Cache-control", "private, must-revalidate");
                     Response.AddHeader("Content-Type", "application/octet-stream");
                     Response.AddHeader("Content-Length", objFile.Length.ToString());
                     Response.AddHeader("Content-Disposition", "attachment; filename=" + Path.GetFileName(this.strFile));
-                    Response.WriteFile(clsConfig.strUploadPath + "\\" + this.strFile);
+                    Response.WriteFile(this.objConfig.strUploadPath + "\\" + this.strFile);
                     break;
 
                 case "delfile":
                     try
                     {
-                        File.Delete(clsConfig.strUploadPath + "\\" + this.strFile);
-                        if (File.Exists(clsConfig.strThumbPath + "\\" + this.strFile))
+                        File.Delete(this.objConfig.strUploadPath + "\\" + this.strFile);
+                        if (File.Exists(this.objConfig.strThumbPath + "\\" + this.strFile))
                         {
-                            File.Delete(clsConfig.strThumbPath + "\\" + this.strFile);
+                            File.Delete(this.objConfig.strThumbPath + "\\" + this.strFile);
                         }
                     }
                     catch
@@ -270,8 +276,8 @@ namespace TinyFileManager.NET
                 case "delfolder":
                     try
                     {
-                        Directory.Delete(clsConfig.strUploadPath + "\\" + strFolder,true);
-                        Directory.Delete(clsConfig.strThumbPath + "\\" + strFolder, true);
+                        Directory.Delete(this.objConfig.strUploadPath + "\\" + strFolder,true);
+                        Directory.Delete(this.objConfig.strThumbPath + "\\" + strFolder, true);
                     }
                     catch
                     {
@@ -297,7 +303,7 @@ namespace TinyFileManager.NET
                     }
 
                     //load folders
-                    arrFolders = Directory.GetDirectories(clsConfig.strUploadPath + this.strCurrPath);
+                    arrFolders = Directory.GetDirectories(this.objConfig.strUploadPath + this.strCurrPath);
                     foreach (string strF in arrFolders)
                     {
                         this.objFItem = new TinyFileManager.NET.clsFileItem();
@@ -306,7 +312,7 @@ namespace TinyFileManager.NET
                         this.objFItem.intColNum = this.getNextColNum();
                         this.objFItem.strPath = this.strCurrPath + Path.GetFileName(strF);
                         this.objFItem.strClassType = "dir";
-                        if (clsConfig.boolAllowDeleteFolder)
+                        if (this.objConfig.boolAllowDeleteFolder)
                         {
                             this.objFItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfolder&folder=" + this.objFItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button top-right\" onclick=\"return confirm('Are you sure to delete the folder and all the objects in it?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
                         }
@@ -320,7 +326,7 @@ namespace TinyFileManager.NET
                     }
 
                     // load files
-                    arrFiles = Directory.GetFiles(clsConfig.strUploadPath + this.strCurrPath);
+                    arrFiles = Directory.GetFiles(this.objConfig.strUploadPath + this.strCurrPath);
                     foreach (string strF in arrFiles)
                     {
                         this.objFItem = new TinyFileManager.NET.clsFileItem();
@@ -367,7 +373,7 @@ namespace TinyFileManager.NET
                                 }
                             }
                             // get delete link
-                            if (clsConfig.boolAllowDeleteFile)
+                            if (this.objConfig.boolAllowDeleteFile)
                             {
                                 this.objFItem.strDeleteLink = "<a href=\"" + this.strCurrLink + "&cmd=delfile&file=" + this.objFItem.strPath + "&currpath=" + this.strCurrPath + "\" class=\"btn erase-button\" onclick=\"return confirm('Are you sure to delete this file?');\" title=\"Erase\"><i class=\"icon-trash\"></i></a>";
                             }
@@ -379,14 +385,14 @@ namespace TinyFileManager.NET
                             if (this.objFItem.boolIsImage)
                             {
                                 // first check to see if thumb exists
-                                if (!File.Exists(clsConfig.strThumbPath + this.objFItem.strPath))
+                                if (!File.Exists(this.objConfig.strThumbPath + this.objFItem.strPath))
                                 {
                                     // thumb doesn't exist, create it
-                                    strTargetFile = clsConfig.strUploadPath + this.objFItem.strPath;
-                                    strThumbFile = clsConfig.strThumbPath + this.objFItem.strPath;
+                                    strTargetFile = this.objConfig.strUploadPath + this.objFItem.strPath;
+                                    strThumbFile = this.objConfig.strThumbPath + this.objFItem.strPath;
                                     this.createThumbnail(strTargetFile, strThumbFile);
                                 }
-                                this.objFItem.strThumbImage = clsConfig.strThumbURL + "/" + this.objFItem.strPath.Replace('\\', '/');
+                                this.objFItem.strThumbImage = this.objConfig.strThumbURL + "/" + this.objFItem.strPath.Replace('\\', '/');
                             }
                             else
                             {
@@ -402,13 +408,13 @@ namespace TinyFileManager.NET
                             this.objFItem.strDownFormOpen = "<form action=\"dialog.aspx?cmd=download&file=" + this.objFItem.strPath + "\" method=\"post\" class=\"download-form\">";
                             if (this.objFItem.boolIsImage)
                             {
-                                this.objFItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
+                                this.objFItem.strPreviewLink = "<a class=\"btn preview\" title=\"Preview\" data-url=\"" + this.objConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "\" data-toggle=\"lightbox\" href=\"#previewLightbox\"><i class=\"icon-eye-open\"></i></a>";
                             }
                             else
                             {
                                 this.objFItem.strPreviewLink = "<a class=\"btn preview disabled\" title=\"Preview\"><i class=\"icon-eye-open\"></i></a>";
                             }
-                            this.objFItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + clsConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + this.objFItem.strThumbImage + "\" height=\"100\"><h4>" + this.objFItem.strName + "</h4></a>";
+                            this.objFItem.strLink = "<a href=\"#\" title=\"Select\" onclick=\"" + this.strApply + "('" + this.objConfig.strUploadURL + "/" + this.objFItem.strPath.Replace('\\', '/') + "'," + this.strType + ")\";\"><img data-src=\"holder.js/140x100\" alt=\"140x100\" src=\"" + this.objFItem.strThumbImage + "\" height=\"100\"><h4>" + this.objFItem.strName + "</h4></a>";
 
                             this.arrLinks.Add(objFItem);
                         }
@@ -454,7 +460,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(clsConfig.arrAllowedImageExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedImageExtensions, Path.GetExtension(strFilename).TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of image file extensions
         } // isImageFile
 
@@ -462,7 +468,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(clsConfig.arrAllowedVideoExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedVideoExtensions, Path.GetExtension(strFilename).TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of video file extensions
         } // isVideoFile
 
@@ -470,7 +476,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(clsConfig.arrAllowedMusicExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedMusicExtensions, Path.GetExtension(strFilename).TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of music file extensions
         } // isMusicFile
 
@@ -478,7 +484,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(clsConfig.arrAllowedMiscExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedMiscExtensions, Path.GetExtension(strFilename).TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of misc file extensions
         } // isMiscFile
 

@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Configuration;
+using System.IO;
+using System.Xml.Linq;
 
 namespace TinyFileManager.NET
 {
-    public static class clsConfig
+    public class clsConfig
     {
+        #region Private Variables
+        clsProfile pobjProfile = new clsProfile();
+        #endregion
+
         #region Settings Properties
         /// <summary>
         ///  Max upload filesize in Mb
         /// </summary>
-        public static int intMaxUploadSizeMb
+        public int intMaxUploadSizeMb
         {
             get
             {
@@ -22,7 +28,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Convert.ToInt32(Properties.Settings.Default.MaxUploadSizeMb);
+                    return Convert.ToInt32(this.pobjProfile.MaxUploadSizeMb);
                 }
             }
         }
@@ -30,7 +36,7 @@ namespace TinyFileManager.NET
         /// <summary>
         ///  Allowed image file extensions
         /// </summary>
-        public static string strAllowedImageExtensions
+        public string strAllowedImageExtensions
         {
             get
             {
@@ -40,7 +46,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Properties.Settings.Default.AllowedImageExtensions;
+                    return this.pobjProfile.AllowedImageExtensions;
                 }
             }
         }
@@ -48,18 +54,18 @@ namespace TinyFileManager.NET
         /// <summary>
         ///  Allowed image file extensions as an array
         /// </summary>
-        public static string[] arrAllowedImageExtensions
+        public string[] arrAllowedImageExtensions
         {
             get
             {
-                return getArrayFromString(clsConfig.strAllowedImageExtensions);
+                return getArrayFromString(this.strAllowedImageExtensions);
             }
         }
 
         /// <summary>
         ///  Allowed document file extensions
         /// </summary>
-        public static string strAllowedFileExtensions
+        public string strAllowedFileExtensions
         {
             get
             {
@@ -69,7 +75,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Properties.Settings.Default.AllowedFileExtensions;
+                    return this.pobjProfile.AllowedFileExtensions;
                 }
             }
         }
@@ -77,18 +83,18 @@ namespace TinyFileManager.NET
         /// <summary>
         ///  Allowed document file extensions as an array
         /// </summary>
-        public static string[] arrAllowedFileExtensions
+        public string[] arrAllowedFileExtensions
         {
             get
             {
-                return getArrayFromString(clsConfig.strAllowedFileExtensions);
+                return getArrayFromString(this.strAllowedFileExtensions);
             }
         }
 
         /// <summary>
         ///  Allowed video file extensions
         /// </summary>
-        public static string strAllowedVideoExtensions
+        public string strAllowedVideoExtensions
         {
             get
             {
@@ -98,7 +104,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Properties.Settings.Default.AllowedVideoExtensions;
+                    return this.pobjProfile.AllowedVideoExtensions;
                 }
             }
         }
@@ -106,18 +112,18 @@ namespace TinyFileManager.NET
         /// <summary>
         ///  Allowed video file extensions as an array
         /// </summary>
-        public static string[] arrAllowedVideoExtensions
+        public string[] arrAllowedVideoExtensions
         {
             get
             {
-                return getArrayFromString(clsConfig.strAllowedVideoExtensions);
+                return getArrayFromString(this.strAllowedVideoExtensions);
             }
         }
 
         /// <summary>
         ///  Allowed music file extensions
         /// </summary>
-        public static string strAllowedMusicExtensions
+        public string strAllowedMusicExtensions
         {
             get
             {
@@ -127,7 +133,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Properties.Settings.Default.AllowedMusicExtensions;
+                    return this.pobjProfile.AllowedMusicExtensions;
                 }
             }
         }
@@ -135,18 +141,18 @@ namespace TinyFileManager.NET
         /// <summary>
         ///  Allowed music file extensions as an array
         /// </summary>
-        public static string[] arrAllowedMusicExtensions
+        public string[] arrAllowedMusicExtensions
         {
             get
             {
-                return getArrayFromString(clsConfig.strAllowedMusicExtensions);
+                return getArrayFromString(this.strAllowedMusicExtensions);
             }
         }
 
         /// <summary>
         ///  Allowed misc file extensions
         /// </summary>
-        public static string strAllowedMiscExtensions
+        public string strAllowedMiscExtensions
         {
             get
             {
@@ -156,7 +162,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Properties.Settings.Default.AllowedMiscExtensions;
+                    return this.pobjProfile.AllowedMiscExtensions;
                 }
             }
         }
@@ -164,69 +170,69 @@ namespace TinyFileManager.NET
         /// <summary>
         ///  Allowed misc file extensions as an array
         /// </summary>
-        public static string[] arrAllowedMiscExtensions
+        public string[] arrAllowedMiscExtensions
         {
             get
             {
-                return getArrayFromString(clsConfig.strAllowedMiscExtensions);
+                return getArrayFromString(this.strAllowedMiscExtensions);
             }
         }
 
         /// <summary>
         ///  All allowed file extensions
         /// </summary>
-        public static string strAllowedAllExtensions
+        public string strAllowedAllExtensions
         {
             get
             {
                 string strRet = "";
 
-                if (clsConfig.strAllowedImageExtensions.Length > 0)
+                if (this.strAllowedImageExtensions.Length > 0)
                 {
-                    strRet = clsConfig.strAllowedImageExtensions;
+                    strRet = this.strAllowedImageExtensions;
                 }
-                if (clsConfig.strAllowedFileExtensions.Length > 0)
+                if (this.strAllowedFileExtensions.Length > 0)
                 {
                     if (strRet.Length > 0)
                     {
-                        strRet += "," + clsConfig.strAllowedFileExtensions;
+                        strRet += "," + this.strAllowedFileExtensions;
                     }
                     else
                     {
-                        strRet = clsConfig.strAllowedFileExtensions;
+                        strRet = this.strAllowedFileExtensions;
                     }
                 }
-                if (clsConfig.strAllowedVideoExtensions.Length > 0)
+                if (this.strAllowedVideoExtensions.Length > 0)
                 {
                     if (strRet.Length > 0)
                     {
-                        strRet += "," + clsConfig.strAllowedVideoExtensions;
+                        strRet += "," + this.strAllowedVideoExtensions;
                     }
                     else
                     {
-                        strRet = clsConfig.strAllowedVideoExtensions;
+                        strRet = this.strAllowedVideoExtensions;
                     }
                 }
-                if (clsConfig.strAllowedMusicExtensions.Length > 0)
+                if (this.strAllowedMusicExtensions.Length > 0)
                 {
                     if (strRet.Length > 0)
                     {
-                        strRet += "," + clsConfig.strAllowedMusicExtensions;
+                        strRet += "," + this.strAllowedMusicExtensions;
                     }
                     else
                     {
-                        strRet = clsConfig.strAllowedMusicExtensions;
+                        strRet = this.strAllowedMusicExtensions;
                     }
                 }
-                if (clsConfig.strAllowedMiscExtensions.Length > 0)
+                if (this.strAllowedMiscExtensions.Length > 0)
                 {
                     if (strRet.Length > 0)
                     {
-                        strRet += "," + clsConfig.strAllowedMiscExtensions;
+                        strRet += "," + this.strAllowedMiscExtensions;
                     }
                     else
                     {
-                        strRet = clsConfig.strAllowedMiscExtensions;
+                        strRet = this.strAllowedMiscExtensions;
                     }
                 }
 
@@ -237,7 +243,7 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns document root
         /// </summary>
-        public static string strDocRoot
+        public string strDocRoot
         {
             get
             {
@@ -247,9 +253,9 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    if (Properties.Settings.Default.RootPath != "")
+                    if (this.pobjProfile.RootPath != "")
                     {
-                        return Properties.Settings.Default.RootPath.TrimEnd('\\');
+                        return this.pobjProfile.RootPath.TrimEnd('\\');
                     }
                     else
                     {
@@ -262,7 +268,7 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the base url of the site
         /// </summary>
-        public static string strBaseURL
+        public string strBaseURL
         {
             get
             {
@@ -272,9 +278,9 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    if (Properties.Settings.Default.RootURL != "")
+                    if (this.pobjProfile.RootURL != "")
                     {
-                        return Properties.Settings.Default.RootURL.TrimEnd('/');
+                        return this.pobjProfile.RootURL.TrimEnd('/');
                     }
                     else
                     {
@@ -287,17 +293,17 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the full upload drive path
         /// </summary>
-        public static string strUploadPath
+        public string strUploadPath
         {
             get
             {
                 if (HttpContext.Current.Session["TFM_UploadPath"] != null)
                 {
-                    return clsConfig.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).TrimEnd('\\') + "\\";
+                    return this.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).TrimEnd('\\') + "\\";
                 }
                 else
                 {
-                    return clsConfig.strDocRoot + "\\" + Properties.Settings.Default.UploadPath.TrimEnd('\\') + "\\";
+                    return this.strDocRoot + "\\" + this.pobjProfile.UploadPath.TrimEnd('\\') + "\\";
                 }
             }
         }
@@ -305,17 +311,17 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the full thumb drive path
         /// </summary>
-        public static string strThumbPath
+        public string strThumbPath
         {
             get
             {
                 if (HttpContext.Current.Session["TFM_ThumbPath"] != null)
                 {
-                    return clsConfig.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_ThumbPath"]).TrimEnd('\\') + "\\";
+                    return this.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_ThumbPath"]).TrimEnd('\\') + "\\";
                 }
                 else
                 {
-                    return clsConfig.strDocRoot + "\\" + Properties.Settings.Default.ThumbPath.TrimEnd('\\') + "\\";
+                    return this.strDocRoot + "\\" + this.pobjProfile.ThumbPath.TrimEnd('\\') + "\\";
                 }
             }
         }
@@ -323,17 +329,17 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the full upload url
         /// </summary>
-        public static string strUploadURL
+        public string strUploadURL
         {
             get
             {
                 if (HttpContext.Current.Session["TFM_UploadPath"] != null)
                 {
-                    return clsConfig.strBaseURL + "/" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).Replace('\\', '/');
+                    return this.strBaseURL + "/" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).Replace('\\', '/');
                 }
                 else
                 {
-                    return clsConfig.strBaseURL + "/" + Properties.Settings.Default.UploadPath.Replace('\\', '/');
+                    return this.strBaseURL + "/" + this.pobjProfile.UploadPath.Replace('\\', '/');
                 }
             }
         }
@@ -341,17 +347,53 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the full thumb url
         /// </summary>
-        public static string strThumbURL
+        public string strThumbURL
         {
             get
             {
                 if (HttpContext.Current.Session["TFM_ThumbPath"] != null)
                 {
-                    return clsConfig.strBaseURL + "/" + Convert.ToString(HttpContext.Current.Session["TFM_ThumbPath"]).Replace('\\', '/');
+                    return this.strBaseURL + "/" + Convert.ToString(HttpContext.Current.Session["TFM_ThumbPath"]).Replace('\\', '/');
                 }
                 else
                 {
-                    return clsConfig.strBaseURL + "/" + Properties.Settings.Default.ThumbPath.Replace('\\', '/');
+                    return this.strBaseURL + "/" + this.pobjProfile.ThumbPath.Replace('\\', '/');
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the setting for a custom element to fill the selected item url
+        /// </summary>
+        public string strFillSelector
+        {
+            get
+            {
+                if (HttpContext.Current.Session["TFM_FillSelector"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_FillSelector"]);
+                }
+                else
+                {
+                    return this.pobjProfile.FillSelector;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the setting for custom code to close the popup
+        /// </summary>
+        public string strPopupCloseCode
+        {
+            get
+            {
+                if (HttpContext.Current.Session["TFM_PopupCloseCode"] != null)
+                {
+                    return Convert.ToString(HttpContext.Current.Session["TFM_PopupCloseCode"]);
+                }
+                else
+                {
+                    return this.pobjProfile.PopupCloseCode;
                 }
             }
         }
@@ -359,7 +401,7 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the setting for allowing upload of file
         /// </summary>
-        public static bool boolAllowUploadFile
+        public bool boolAllowUploadFile
         {
             get
             {
@@ -369,7 +411,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Convert.ToBoolean(Properties.Settings.Default.AllowUploadFile);
+                    return Convert.ToBoolean(this.pobjProfile.AllowUploadFile);
                 }
             }
         }
@@ -377,7 +419,7 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the setting for allowing delete of file
         /// </summary>
-        public static bool boolAllowDeleteFile
+        public bool boolAllowDeleteFile
         {
             get
             {
@@ -387,7 +429,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFile);
+                    return Convert.ToBoolean(this.pobjProfile.AllowDeleteFile);
                 }
             }
         }
@@ -395,7 +437,7 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the setting for allowing creation of folder
         /// </summary>
-        public static bool boolAllowCreateFolder
+        public bool boolAllowCreateFolder
         {
             get
             {
@@ -405,7 +447,7 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Convert.ToBoolean(Properties.Settings.Default.AllowCreateFolder);
+                    return Convert.ToBoolean(this.pobjProfile.AllowCreateFolder);
                 }
             }
         }
@@ -413,7 +455,7 @@ namespace TinyFileManager.NET
         /// <summary>
         /// Returns the setting for allowing delete of folder
         /// </summary>
-        public static bool boolAllowDeleteFolder
+        public bool boolAllowDeleteFolder
         {
             get
             {
@@ -423,13 +465,33 @@ namespace TinyFileManager.NET
                 }
                 else
                 {
-                    return Convert.ToBoolean(Properties.Settings.Default.AllowDeleteFolder);
+                    return Convert.ToBoolean(this.pobjProfile.AllowDeleteFolder);
                 }
             }
         }
         #endregion
 
-        private static string[] getArrayFromString(string strInput)
+        #region Constructors
+        public clsConfig() 
+        {
+            this.LoadConfig("Default");
+        }
+
+        public clsConfig(string strProfile)
+        {
+            if (strProfile == "")
+            {
+                this.LoadConfig("Default");
+            }
+            else
+            {
+                this.LoadConfig(strProfile);
+            }
+        }
+        #endregion
+
+        #region Private Routines
+        private string[] getArrayFromString(string strInput)
         {
                 string[] arrExt;
                 string strTemp;
@@ -440,6 +502,42 @@ namespace TinyFileManager.NET
 
                 return arrExt;
         }   // getArrayFromString
+
+        private void LoadConfig(string strProfile)
+        {
+            string strConfig;
+            XDocument objDoc;
+            XElement objProfiles;
+
+            strConfig = HttpContext.Current.Server.MapPath("web.config");
+            objDoc = XDocument.Load(strConfig);
+            objProfiles = objDoc.Element("configuration").Element("TFMProfiles");
+            foreach (XElement objProfile in objProfiles.Descendants("profile"))
+            {
+                if (Convert.ToString(objProfile.Attribute("name").Value).ToLower() == strProfile.ToLower())
+                {
+                    this.pobjProfile = new clsProfile();
+                    this.pobjProfile.AllowCreateFolder = Convert.ToBoolean(objProfile.Element("AllowCreateFolder").Value);
+                    this.pobjProfile.AllowDeleteFile = Convert.ToBoolean(objProfile.Element("AllowDeleteFile").Value);
+                    this.pobjProfile.AllowDeleteFolder = Convert.ToBoolean(objProfile.Element("AllowDeleteFolder").Value);
+                    this.pobjProfile.AllowUploadFile = Convert.ToBoolean(objProfile.Element("AllowUploadFile").Value);
+                    this.pobjProfile.AllowedFileExtensions = objProfile.Element("AllowedFileExtensions").Value;
+                    this.pobjProfile.AllowedImageExtensions = objProfile.Element("AllowedImageExtensions").Value;
+                    this.pobjProfile.AllowedMiscExtensions = objProfile.Element("AllowedMiscExtensions").Value;
+                    this.pobjProfile.AllowedMusicExtensions = objProfile.Element("AllowedMusicExtensions").Value;
+                    this.pobjProfile.AllowedVideoExtensions = objProfile.Element("AllowedVideoExtensions").Value;
+                    this.pobjProfile.FillSelector = objProfile.Element("FillSelector").Value;
+                    this.pobjProfile.MaxUploadSizeMb = Convert.ToInt16(objProfile.Element("MaxUploadSizeMb").Value);
+                    this.pobjProfile.PopupCloseCode = objProfile.Element("PopupCloseCode").Value;
+                    this.pobjProfile.RootPath = objProfile.Element("RootPath").Value;
+                    this.pobjProfile.RootURL = objProfile.Element("RootURL").Value;
+                    this.pobjProfile.ThumbPath = objProfile.Element("ThumbPath").Value;
+                    this.pobjProfile.UploadPath = objProfile.Element("UploadPath").Value;
+                    break;
+                }
+            }   // foreach
+        }   // LoadConfig
+        #endregion
 
     }   // class
 
