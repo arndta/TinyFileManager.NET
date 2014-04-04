@@ -86,7 +86,7 @@ namespace TinyFileManager.NET
             }
 
             //setup current link
-            strCurrLink = "dialog.aspx?type=" + this.strType + "&editor=" + this.strEditor + "&lang=" + this.strLang;
+            strCurrLink = "dialog.aspx?type=" + this.strType + "&editor=" + this.strEditor + "&lang=" + this.strLang + "&profile=" + this.strProfile;
 
             switch (strCmd)
             {
@@ -189,6 +189,16 @@ namespace TinyFileManager.NET
                     Response.Write("<div class=\"tr\">");   // start row
                     Response.Write("<div class=\"td\"><b>UploadURL:</b></div>");
                     Response.Write("<div class=\"td\">" + this.objConfig.strUploadURL + "</div>");
+                    Response.Write("</div>");   //end row
+
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>FillSelector:</b></div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strFillSelector + "</div>");
+                    Response.Write("</div>");   //end row
+
+                    Response.Write("<div class=\"tr\">");   // start row
+                    Response.Write("<div class=\"td\"><b>PopupCloseCode:</b></div>");
+                    Response.Write("<div class=\"td\">" + this.objConfig.strPopupCloseCode + "</div>");
                     Response.Write("</div>");   //end row
 
                     Response.Write("</div>");   //end body
