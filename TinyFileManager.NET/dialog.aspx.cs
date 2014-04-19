@@ -235,8 +235,8 @@ namespace TinyFileManager.NET
                     //check file was submitted
                     if ((filUpload != null) && (filUpload.ContentLength > 0))
                     {
-                        strTargetFile = this.objConfig.strUploadPath + this.strFolder + filUpload.FileName;
-                        strThumbFile = this.objConfig.strThumbPath + this.strFolder + filUpload.FileName;
+                        strTargetFile = this.objConfig.strUploadPath + this.strFolder + filUpload.FileName.ToLower();
+                        strThumbFile = this.objConfig.strThumbPath + this.strFolder + filUpload.FileName.ToLower();
                         filUpload.SaveAs(strTargetFile);
 
                         if (this.isImageFile(strTargetFile))
@@ -470,7 +470,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(this.objConfig.arrAllowedImageExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedImageExtensions, Path.GetExtension(strFilename).ToLower().TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of image file extensions
         } // isImageFile
 
@@ -478,7 +478,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(this.objConfig.arrAllowedVideoExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedVideoExtensions, Path.GetExtension(strFilename).ToLower().TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of video file extensions
         } // isVideoFile
 
@@ -486,7 +486,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(this.objConfig.arrAllowedMusicExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedMusicExtensions, Path.GetExtension(strFilename).ToLower().TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of music file extensions
         } // isMusicFile
 
@@ -494,7 +494,7 @@ namespace TinyFileManager.NET
         {
             int intPosition;
 
-            intPosition = Array.IndexOf(this.objConfig.arrAllowedMiscExtensions, Path.GetExtension(strFilename).TrimStart('.'));
+            intPosition = Array.IndexOf(this.objConfig.arrAllowedMiscExtensions, Path.GetExtension(strFilename).ToLower().TrimStart('.'));
             return (intPosition > -1);  // if > -1, then it was found in the list of misc file extensions
         } // isMiscFile
 
