@@ -5,9 +5,10 @@ using System.Web;
 
 namespace TinyFileManager.NET
 {
-	public class clsProfile
+    public class clsProfile
     {
         #region Private Variables
+
         private string pstrAllowedImageExtensions = "";
         private string pstrAllowedFileExtensions = "";
         private string pstrAllowedVideoExtensions = "";
@@ -24,9 +25,11 @@ namespace TinyFileManager.NET
         private string pstrRootURL = "";
         private string pstrFillSelector = "";
         private string pstrPopupCloseCode = "";
-        #endregion
+
+        #endregion Private Variables
 
         #region Settings Properties
+
         /// <summary>
         ///  Max upload filesize in Mb
         /// </summary>
@@ -41,7 +44,6 @@ namespace TinyFileManager.NET
                 pintMaxUploadSizeMb = value;
             }
         }
-
 
         /// <summary>
         ///  Allowed image file extensions
@@ -245,6 +247,12 @@ namespace TinyFileManager.NET
         {
             get
             {
+                var targetId = HttpContext.Current.Request["targetId"];
+                if (!string.IsNullOrEmpty(targetId))
+                {
+                    return pstrFillSelector.Replace("demotextbox", targetId);
+                }
+
                 return pstrFillSelector;
             }
             set
@@ -267,6 +275,7 @@ namespace TinyFileManager.NET
                 pstrPopupCloseCode = value;
             }
         }
-        #endregion
+
+        #endregion Settings Properties
     }
 }

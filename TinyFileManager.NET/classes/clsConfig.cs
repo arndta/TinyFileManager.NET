@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Configuration;
 using System.IO;
+using System.Linq;
+using System.Web;
 using System.Xml.Linq;
 
 namespace TinyFileManager.NET
@@ -11,10 +11,13 @@ namespace TinyFileManager.NET
     public class clsConfig
     {
         #region Private Variables
-        clsProfile pobjProfile = new clsProfile();
-        #endregion
+
+        private clsProfile pobjProfile = new clsProfile();
+
+        #endregion Private Variables
 
         #region Settings Properties
+
         /// <summary>
         ///  Max upload filesize in Mb
         /// </summary>
@@ -259,7 +262,7 @@ namespace TinyFileManager.NET
                     }
                     else
                     {
-                        return HttpContext.Current.Server.MapPath("/").TrimEnd('\\');
+						return HttpContext.Current.Server.MapPath("/"); //URIHelper.BasePath.TrimEnd('\\');
                     }
                 }
             }
@@ -299,11 +302,11 @@ namespace TinyFileManager.NET
             {
                 if (HttpContext.Current.Session["TFM_UploadPath"] != null)
                 {
-                    return this.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).TrimEnd('\\') + "\\";
+                    return this.strDocRoot + "\\" + Convert.ToString(HttpContext.Current.Session["TFM_UploadPath"]).TrimEnd('\\');
                 }
                 else
                 {
-                    return this.strDocRoot + "\\" + this.pobjProfile.UploadPath.TrimEnd('\\') + "\\";
+                    return this.strDocRoot + "\\" + this.pobjProfile.UploadPath.TrimEnd('\\');
                 }
             }
         }
@@ -469,10 +472,12 @@ namespace TinyFileManager.NET
                 }
             }
         }
-        #endregion
+
+        #endregion Settings Properties
 
         #region Constructors
-        public clsConfig() 
+
+        public clsConfig()
         {
             this.LoadConfig("Default");
         }
@@ -488,19 +493,21 @@ namespace TinyFileManager.NET
                 this.LoadConfig(strProfile);
             }
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Private Routines
+
         private string[] getArrayFromString(string strInput)
         {
-                string[] arrExt;
-                string strTemp;
+            string[] arrExt;
+            string strTemp;
 
-                //remove lead and trail single quotes so we can SPLIT the hell out of it
-                strTemp = strInput.Trim('\'');
-                arrExt = strTemp.Split(new string[] {"'",",","'"}, StringSplitOptions.RemoveEmptyEntries);
+            //remove lead and trail single quotes so we can SPLIT the hell out of it
+            strTemp = strInput.Trim('\'');
+            arrExt = strTemp.Split(new string[] { "'", ",", "'" }, StringSplitOptions.RemoveEmptyEntries);
 
-                return arrExt;
+            return arrExt;
         }   // getArrayFromString
 
         private void LoadConfig(string strProfile)
@@ -537,9 +544,7 @@ namespace TinyFileManager.NET
                 }
             }   // foreach
         }   // LoadConfig
-        #endregion
 
+        #endregion Private Routines
     }   // class
-
-    
 }   // namespace
